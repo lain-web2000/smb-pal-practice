@@ -1,0 +1,2419 @@
+ca65 V2.19 - Git b993d8833
+Main file   : title/boot-greated.asm
+Current file: title/boot-greated.asm
+
+000000r 1               ; # GreatEd Startup code
+000000r 1               ;
+000000r 1               ; This is used for hacks made with greated
+000000r 1               ;
+000000r 1               
+000000r 1               .segment "PRACTISE_PRG0"
+000000r 1               TitleReset2:
+000000r 1  A9 80            lda #%10000000     ; enable battery backed wram
+000002r 1  8D 01 A0         sta $A001          ;
+000005r 1               ; include title file
+000005r 1               .include "title.asm"
+000005r 2               ; # Main menu screen code
+000005r 2               ;
+000005r 2               ; This contains all the code used for the practise rom.
+000005r 2               ;
+000005r 2               ; It is included from the "boot" files.
+000005r 2               ;
+000005r 2               
+000005r 2               .p02
+000005r 2               .linecont +
+000005r 2               .include "ascii.asm"
+000005r 3               ; tell cc65 to convert ascii into smb1 charset
+000005r 3               
+000005r 3               ; space
+000005r 3               .charmap    $20,   $24
+000005r 3               ; !
+000005r 3               .charmap    $21,   $2B
+000005r 3               ; -
+000005r 3               .charmap    $2D,   $28
+000005r 3               ; x to cross
+000005r 3               .charmap    $78,   $29
+000005r 3               ; c to copyright
+000005r 3               .charmap    $62,   $CF
+000005r 3               ; m to mushroom
+000005r 3               .charmap    $6D,   $CE
+000005r 3               ; / to chain
+000005r 3               .charmap    $2F,   $7F
+000005r 3               
+000005r 3               
+000005r 3               ; 0
+000005r 3               .charmap $30+00,   $00
+000005r 3               ; 1
+000005r 3               .charmap $30+01,   $01
+000005r 3               ; 2
+000005r 3               .charmap $30+02,   $02
+000005r 3               ; 3
+000005r 3               .charmap $30+03,   $03
+000005r 3               ; 4
+000005r 3               .charmap $30+04,   $04
+000005r 3               ; 5
+000005r 3               .charmap $30+05,   $05
+000005r 3               ; 6
+000005r 3               .charmap $30+06,   $06
+000005r 3               ; 7
+000005r 3               .charmap $30+07,   $07
+000005r 3               ; 8
+000005r 3               .charmap $30+08,   $08
+000005r 3               ; 9
+000005r 3               .charmap $30+09,   $09
+000005r 3               
+000005r 3               ; A
+000005r 3               .charmap $41+00, $A+00
+000005r 3               ; B
+000005r 3               .charmap $41+01, $A+01
+000005r 3               ; C
+000005r 3               .charmap $41+02, $A+02
+000005r 3               ; D
+000005r 3               .charmap $41+03, $A+03
+000005r 3               ; E
+000005r 3               .charmap $41+04, $A+04
+000005r 3               ; F
+000005r 3               .charmap $41+05, $A+05
+000005r 3               ; G
+000005r 3               .charmap $41+06, $A+06
+000005r 3               ; H
+000005r 3               .charmap $41+07, $A+07
+000005r 3               ; I
+000005r 3               .charmap $41+08, $A+08
+000005r 3               ; J
+000005r 3               .charmap $41+09, $A+09
+000005r 3               ; K
+000005r 3               .charmap $41+10, $A+10
+000005r 3               ; L
+000005r 3               .charmap $41+11, $A+11
+000005r 3               ; M
+000005r 3               .charmap $41+12, $A+12
+000005r 3               ; N
+000005r 3               .charmap $41+13, $A+13
+000005r 3               ; O
+000005r 3               .charmap $41+14, $A+14
+000005r 3               ; P
+000005r 3               .charmap $41+15, $A+15
+000005r 3               ; Q
+000005r 3               .charmap $41+16, $A+16
+000005r 3               ; R
+000005r 3               .charmap $41+17, $A+17
+000005r 3               ; S
+000005r 3               .charmap $41+18, $A+18
+000005r 3               ; T
+000005r 3               .charmap $41+19, $A+19
+000005r 3               ; U
+000005r 3               .charmap $41+20, $A+20
+000005r 3               ; V
+000005r 3               .charmap $41+21, $A+21
+000005r 3               ; W
+000005r 3               .charmap $41+22, $A+22
+000005r 3               ; X
+000005r 3               .charmap $41+23, $A+23
+000005r 3               ; Y
+000005r 3               .charmap $41+24, $A+24
+000005r 3               ; Z
+000005r 3               .charmap $41+25, $A+25
+000005r 3               
+000005r 2               .include "../const.inc"
+000005r 3               BANKNR_TITLE = $E
+000005r 3               BANKNR_SMB = $0
+000005r 3               
+000005r 3               
+000005r 3               PPU_CTRL_REG1         = $2000
+000005r 3               PPU_CTRL_REG2         = $2001
+000005r 3               PPU_STATUS            = $2002
+000005r 3               PPU_SPR_ADDR          = $2003
+000005r 3               PPU_SPR_DATA          = $2004
+000005r 3               PPU_SCROLL_REG        = $2005
+000005r 3               PPU_ADDRESS           = $2006
+000005r 3               PPU_DATA              = $2007
+000005r 3               
+000005r 3               SND_REGISTER          = $4000
+000005r 3               SND_SQUARE1_REG       = $4000
+000005r 3               SND_SQUARE2_REG       = $4004
+000005r 3               SND_TRIANGLE_REG      = $4008
+000005r 3               SND_NOISE_REG         = $400c
+000005r 3               SND_DELTA_REG         = $4010
+000005r 3               SND_MASTERCTRL_REG    = $4015
+000005r 3               
+000005r 3               SPR_DMA               = $4014
+000005r 3               JOYPAD_PORT           = $4016
+000005r 3               JOYPAD_PORT1          = $4016
+000005r 3               JOYPAD_PORT2          = $4017
+000005r 3               
+000005r 3               ; GAME SPECIFIC DEFINES
+000005r 3               
+000005r 3               ObjectOffset          = $08
+000005r 3               
+000005r 3               FrameCounter          = $09
+000005r 3               
+000005r 3               SavedJoypadBits       = $06fc
+000005r 3               SavedJoypad1Bits      = $06fc
+000005r 3               SavedJoypad2Bits      = $06fd
+000005r 3               JoypadBitMask         = $074a
+000005r 3               JoypadOverride        = $0758
+000005r 3               
+000005r 3               A_B_Buttons           = $0a
+000005r 3               PreviousA_B_Buttons   = $0d
+000005r 3               Up_Down_Buttons       = $0b
+000005r 3               Left_Right_Buttons    = $0c
+000005r 3               
+000005r 3               GameEngineSubroutine  = $0e
+000005r 3               
+000005r 3               Mirror_PPU_CTRL_REG1  = $0778
+000005r 3               Mirror_PPU_CTRL_REG2  = $0779
+000005r 3               
+000005r 3               OperMode              = $0770
+000005r 3               OperMode_Task         = $0772
+000005r 3               ScreenRoutineTask     = $073c
+000005r 3               
+000005r 3               GamePauseStatus       = $0776
+000005r 3               GamePauseTimer        = $0777
+000005r 3               
+000005r 3               DemoAction            = $0717
+000005r 3               DemoActionTimer       = $0718
+000005r 3               
+000005r 3               TimerControl          = $0747
+000005r 3               IntervalTimerControl  = $077f
+000005r 3               
+000005r 3               Timers                = $0780
+000005r 3               SelectTimer           = $0780
+000005r 3               PlayerAnimTimer       = $0781
+000005r 3               JumpSwimTimer         = $0782
+000005r 3               RunningTimer          = $0783
+000005r 3               BlockBounceTimer      = $0784
+000005r 3               SideCollisionTimer    = $0785
+000005r 3               JumpspringTimer       = $0786
+000005r 3               GameTimerCtrlTimer    = $0787
+000005r 3               ClimbSideTimer        = $0789
+000005r 3               EnemyFrameTimer       = $078a
+000005r 3               FrenzyEnemyTimer      = $078f
+000005r 3               BowserFireBreathTimer = $0790
+000005r 3               StompTimer            = $0791
+000005r 3               AirBubbleTimer        = $0792
+000005r 3               ScrollIntervalTimer   = $0795
+000005r 3               EnemyIntervalTimer    = $0796
+000005r 3               BrickCoinTimer        = $079d
+000005r 3               InjuryTimer           = $079e
+000005r 3               StarInvincibleTimer   = $079f
+000005r 3               ScreenTimer           = $07a0
+000005r 3               WorldEndTimer         = $07a1
+000005r 3               DemoTimer             = $07a2
+000005r 3               
+000005r 3               SpriteLen = $4
+000005r 3               Sprite_Data           = $0200
+000005r 3               Sprite_Y_Position     = $0200
+000005r 3               Sprite_Tilenumber     = $0201
+000005r 3               Sprite_Attributes     = $0202
+000005r 3               Sprite_X_Position     = $0203
+000005r 3               
+000005r 3               ScreenEdge_PageLoc    = $071a
+000005r 3               ScreenEdge_X_Pos      = $071c
+000005r 3               ScreenLeft_PageLoc    = $071a
+000005r 3               ScreenRight_PageLoc   = $071b
+000005r 3               ScreenLeft_X_Pos      = $071c
+000005r 3               ScreenRight_X_Pos     = $071d
+000005r 3               
+000005r 3               PlayerFacingDir       = $33
+000005r 3               DestinationPageLoc    = $34
+000005r 3               VictoryWalkControl    = $35
+000005r 3               ScrollFractional      = $0768
+000005r 3               PrimaryMsgCounter     = $0719
+000005r 3               SecondaryMsgCounter   = $0749
+000005r 3               
+000005r 3               HorizontalScroll      = $073f
+000005r 3               VerticalScroll        = $0740
+000005r 3               ScrollLock            = $0723
+000005r 3               ScrollThirtyTwo       = $073d
+000005r 3               Player_X_Scroll       = $06ff
+000005r 3               Player_Pos_ForScroll  = $0755
+000005r 3               ScrollAmount          = $0775
+000005r 3               
+000005r 3               AreaData              = $e7
+000005r 3               AreaDataLow           = $e7
+000005r 3               AreaDataHigh          = $e8
+000005r 3               EnemyData             = $e9
+000005r 3               EnemyDataLow          = $e9
+000005r 3               EnemyDataHigh         = $ea
+000005r 3               
+000005r 3               AreaParserTaskNum     = $071f
+000005r 3               ColumnSets            = $071e
+000005r 3               CurrentPageLoc        = $0725
+000005r 3               CurrentColumnPos      = $0726
+000005r 3               BackloadingFlag       = $0728
+000005r 3               BehindAreaParserFlag  = $0729
+000005r 3               AreaObjectPageLoc     = $072a
+000005r 3               AreaObjectPageSel     = $072b
+000005r 3               AreaDataOffset        = $072c
+000005r 3               AreaObjOffsetBuffer   = $072d
+000005r 3               AreaObjectLength      = $0730
+000005r 3               StaircaseControl      = $0734
+000005r 3               AreaObjectHeight      = $0735
+000005r 3               MushroomLedgeHalfLen  = $0736
+000005r 3               EnemyDataOffset       = $0739
+000005r 3               EnemyObjectPageLoc    = $073a
+000005r 3               EnemyObjectPageSel    = $073b
+000005r 3               MetatileBuffer        = $06a1
+000005r 3               BlockBufferColumnPos  = $06a0
+000005r 3               CurrentNTAddr_Low     = $0721
+000005r 3               CurrentNTAddr_High    = $0720
+000005r 3               AttributeBuffer       = $03f9
+000005r 3               
+000005r 3               LoopCommand           = $0745
+000005r 3               
+000005r 3               DisplayDigits         = $07d7
+000005r 3               TopScoreDisplay       = $07d7
+000005r 3               ScoreAndCoinDisplay   = $07dd
+000005r 3               PlayerScoreDisplay    = $07dd
+000005r 3               GameTimerDisplay      = $07f8
+000005r 3               DigitModifier         = $0134
+000005r 3               
+000005r 3               VerticalFlipFlag      = $0109
+000005r 3               FloateyNum_Control    = $0110
+000005r 3               ShellChainCounter     = $0125
+000005r 3               FloateyNum_Timer      = $012c
+000005r 3               FloateyNum_X_Pos      = $0117
+000005r 3               FloateyNum_Y_Pos      = $011e
+000005r 3               FlagpoleFNum_Y_Pos    = $010d
+000005r 3               FlagpoleFNum_YMFDummy = $010e
+000005r 3               FlagpoleScore         = $010f
+000005r 3               FlagpoleCollisionYPos = $070f
+000005r 3               StompChainCounter     = $0484
+000005r 3               
+000005r 3               VRAM_Buffer1_Offset   = $0300
+000005r 3               VRAM_Buffer1          = $0301
+000005r 3               VRAM_Buffer2_Offset   = $0340
+000005r 3               VRAM_Buffer2          = $0341
+000005r 3               VRAM_Buffer_AddrCtrl  = $0773
+000005r 3               Sprite0HitDetectFlag  = $0722
+000005r 3               DisableScreenFlag     = $0774
+000005r 3               DisableIntermediate   = $0769
+000005r 3               ColorRotateOffset     = $06d4
+000005r 3               
+000005r 3               TerrainControl        = $0727
+000005r 3               AreaStyle             = $0733
+000005r 3               ForegroundScenery     = $0741
+000005r 3               BackgroundScenery     = $0742
+000005r 3               CloudTypeOverride     = $0743
+000005r 3               BackgroundColorCtrl   = $0744
+000005r 3               AreaType              = $074e
+000005r 3               AreaAddrsLOffset      = $074f
+000005r 3               AreaPointer           = $0750
+000005r 3               
+000005r 3               PlayerEntranceCtrl    = $0710
+000005r 3               GameTimerSetting      = $0715
+000005r 3               AltEntranceControl    = $0752
+000005r 3               EntrancePage          = $0751
+000005r 3               NumberOfPlayers       = $077a
+000005r 3               WarpZoneControl       = $06d6
+000005r 3               ChangeAreaTimer       = $06de
+000005r 3               
+000005r 3               MultiLoopCorrectCntr  = $06d9
+000005r 3               MultiLoopPassCntr     = $06da
+000005r 3               
+000005r 3               FetchNewGameTimerFlag = $0757
+000005r 3               GameTimerExpiredFlag  = $0759
+000005r 3               
+000005r 3               PrimaryHardMode       = $076a
+000005r 3               SecondaryHardMode     = $06cc
+000005r 3               WorldSelectNumber     = $076b
+000005r 3               WorldSelectEnableFlag = $07fc
+000005r 3               ContinueWorld         = $07fd
+000005r 3               
+000005r 3               CurrentPlayer         = $0753
+000005r 3               PlayerSize            = $0754
+000005r 3               PlayerStatus          = $0756
+000005r 3               
+000005r 3               OnscreenPlayerInfo    = $075a
+000005r 3               NumberofLives         = $075a ;used by current player
+000005r 3               HalfwayPage           = $075b
+000005r 3               LevelNumber           = $075c ;the actual dash number
+000005r 3               Hidden1UpFlag         = $075d
+000005r 3               CoinTally             = $075e
+000005r 3               WorldNumber           = $075f
+000005r 3               AreaNumber            = $0760 ;internal number used to find areas
+000005r 3               
+000005r 3               CoinTallyFor1Ups      = $0748
+000005r 3               
+000005r 3               OffscreenPlayerInfo   = $0761
+000005r 3               OffScr_NumberofLives  = $0761 ;used by offscreen player
+000005r 3               OffScr_HalfwayPage    = $0762
+000005r 3               OffScr_LevelNumber    = $0763
+000005r 3               OffScr_Hidden1UpFlag  = $0764
+000005r 3               OffScr_CoinTally      = $0765
+000005r 3               OffScr_WorldNumber    = $0766
+000005r 3               OffScr_AreaNumber     = $0767
+000005r 3               
+000005r 3               BalPlatformAlignment  = $03a0
+000005r 3               Platform_X_Scroll     = $03a1
+000005r 3               PlatformCollisionFlag = $03a2
+000005r 3               YPlatformTopYPos      = $0401
+000005r 3               YPlatformCenterYPos   = $58
+000005r 3               
+000005r 3               BrickCoinTimerFlag    = $06bc
+000005r 3               StarFlagTaskControl   = $0746
+000005r 3               
+000005r 3               PseudoRandomBitReg    = $07a7
+000005r 3               WarmBootValidation    = $07ff
+000005r 3               
+000005r 3               SprShuffleAmtOffset   = $06e0
+000005r 3               SprShuffleAmt         = $06e1
+000005r 3               SprDataOffset         = $06e4
+000005r 3               Player_SprDataOffset  = $06e4
+000005r 3               Enemy_SprDataOffset   = $06e5
+000005r 3               Block_SprDataOffset   = $06ec
+000005r 3               Alt_SprDataOffset     = $06ec
+000005r 3               Bubble_SprDataOffset  = $06ee
+000005r 3               FBall_SprDataOffset   = $06f1
+000005r 3               Misc_SprDataOffset    = $06f3
+000005r 3               SprDataOffset_Ctrl    = $03ee
+000005r 3               
+000005r 3               Player_State          = $1d
+000005r 3               Enemy_State           = $1e
+000005r 3               Fireball_State        = $24
+000005r 3               Block_State           = $26
+000005r 3               Misc_State            = $2a
+000005r 3               
+000005r 3               Player_MovingDir      = $45
+000005r 3               Enemy_MovingDir       = $46
+000005r 3               
+000005r 3               SprObject_X_Speed     = $57
+000005r 3               Player_X_Speed        = $57
+000005r 3               Enemy_X_Speed         = $58
+000005r 3               Fireball_X_Speed      = $5e
+000005r 3               Block_X_Speed         = $60
+000005r 3               Misc_X_Speed          = $64
+000005r 3               
+000005r 3               Jumpspring_FixedYPos  = $58
+000005r 3               JumpspringAnimCtrl    = $070e
+000005r 3               JumpspringForce       = $06db
+000005r 3               
+000005r 3               SprObject_PageLoc     = $6d
+000005r 3               Player_PageLoc        = $6d
+000005r 3               Enemy_PageLoc         = $6e
+000005r 3               Fireball_PageLoc      = $74
+000005r 3               Block_PageLoc         = $76
+000005r 3               Misc_PageLoc          = $7a
+000005r 3               Bubble_PageLoc        = $83
+000005r 3               
+000005r 3               SprObject_X_Position  = $86
+000005r 3               Player_X_Position     = $86
+000005r 3               Enemy_X_Position      = $87
+000005r 3               Fireball_X_Position   = $8d
+000005r 3               Block_X_Position      = $8f
+000005r 3               Misc_X_Position       = $93
+000005r 3               Bubble_X_Position     = $9c
+000005r 3               
+000005r 3               SprObject_Y_Speed     = $9f
+000005r 3               Player_Y_Speed        = $9f
+000005r 3               Enemy_Y_Speed         = $a0
+000005r 3               Fireball_Y_Speed      = $a6
+000005r 3               Block_Y_Speed         = $a8
+000005r 3               Misc_Y_Speed          = $ac
+000005r 3               
+000005r 3               SprObject_Y_HighPos   = $b5
+000005r 3               Player_Y_HighPos      = $b5
+000005r 3               Enemy_Y_HighPos       = $b6
+000005r 3               Fireball_Y_HighPos    = $bc
+000005r 3               Block_Y_HighPos       = $be
+000005r 3               Misc_Y_HighPos        = $c2
+000005r 3               Bubble_Y_HighPos      = $cb
+000005r 3               
+000005r 3               SprObject_Y_Position  = $ce
+000005r 3               Player_Y_Position     = $ce
+000005r 3               Enemy_Y_Position      = $cf
+000005r 3               Fireball_Y_Position   = $d5
+000005r 3               Block_Y_Position      = $d7
+000005r 3               Misc_Y_Position       = $db
+000005r 3               Bubble_Y_Position     = $e4
+000005r 3               
+000005r 3               SprObject_Rel_XPos    = $03ad
+000005r 3               Player_Rel_XPos       = $03ad
+000005r 3               Enemy_Rel_XPos        = $03ae
+000005r 3               Fireball_Rel_XPos     = $03af
+000005r 3               Bubble_Rel_XPos       = $03b0
+000005r 3               Block_Rel_XPos        = $03b1
+000005r 3               Misc_Rel_XPos         = $03b3
+000005r 3               
+000005r 3               SprObject_Rel_YPos    = $03b8
+000005r 3               Player_Rel_YPos       = $03b8
+000005r 3               Enemy_Rel_YPos        = $03b9
+000005r 3               Fireball_Rel_YPos     = $03ba
+000005r 3               Bubble_Rel_YPos       = $03bb
+000005r 3               Block_Rel_YPos        = $03bc
+000005r 3               Misc_Rel_YPos         = $03be
+000005r 3               
+000005r 3               SprObject_SprAttrib   = $03c4
+000005r 3               Player_SprAttrib      = $03c4
+000005r 3               Enemy_SprAttrib       = $03c5
+000005r 3               
+000005r 3               SprObject_X_MoveForce = $0400
+000005r 3               Enemy_X_MoveForce     = $0401
+000005r 3               
+000005r 3               SprObject_YMF_Dummy   = $0416
+000005r 3               Player_YMF_Dummy      = $0416
+000005r 3               Enemy_YMF_Dummy       = $0417
+000005r 3               Bubble_YMF_Dummy      = $042c
+000005r 3               
+000005r 3               SprObject_Y_MoveForce = $0433
+000005r 3               Player_Y_MoveForce    = $0433
+000005r 3               Enemy_Y_MoveForce     = $0434
+000005r 3               Block_Y_MoveForce     = $043c
+000005r 3               
+000005r 3               DisableCollisionDet   = $0716
+000005r 3               Player_CollisionBits  = $0490
+000005r 3               Enemy_CollisionBits   = $0491
+000005r 3               
+000005r 3               SprObj_BoundBoxCtrl   = $0499
+000005r 3               Player_BoundBoxCtrl   = $0499
+000005r 3               Enemy_BoundBoxCtrl    = $049a
+000005r 3               Fireball_BoundBoxCtrl = $04a0
+000005r 3               Misc_BoundBoxCtrl     = $04a2
+000005r 3               
+000005r 3               EnemyFrenzyBuffer     = $06cb
+000005r 3               EnemyFrenzyQueue      = $06cd
+000005r 3               Enemy_Flag            = $0f
+000005r 3               Enemy_ID              = $16
+000005r 3               
+000005r 3               PlayerGfxOffset       = $06d5
+000005r 3               Player_XSpeedAbsolute = $0700
+000005r 3               FrictionAdderHigh     = $0701
+000005r 3               FrictionAdderLow      = $0702
+000005r 3               RunningSpeed          = $0703
+000005r 3               SwimmingFlag          = $0704
+000005r 3               Player_X_MoveForce    = $0705
+000005r 3               DiffToHaltJump        = $0706
+000005r 3               JumpOrigin_Y_HighPos  = $0707
+000005r 3               JumpOrigin_Y_Position = $0708
+000005r 3               VerticalForce         = $0709
+000005r 3               VerticalForceDown     = $070a
+000005r 3               PlayerChangeSizeFlag  = $070b
+000005r 3               PlayerAnimTimerSet    = $070c
+000005r 3               PlayerAnimCtrl        = $070d
+000005r 3               DeathMusicLoaded      = $0712
+000005r 3               FlagpoleSoundQueue    = $0713
+000005r 3               CrouchingFlag         = $0714
+000005r 3               MaximumLeftSpeed      = $0450
+000005r 3               MaximumRightSpeed     = $0456
+000005r 3               
+000005r 3               SprObject_OffscrBits  = $03d0
+000005r 3               Player_OffscreenBits  = $03d0
+000005r 3               Enemy_OffscreenBits   = $03d1
+000005r 3               FBall_OffscreenBits   = $03d2
+000005r 3               Bubble_OffscreenBits  = $03d3
+000005r 3               Block_OffscreenBits   = $03d4
+000005r 3               Misc_OffscreenBits    = $03d6
+000005r 3               EnemyOffscrBitsMasked = $03d8
+000005r 3               
+000005r 3               Cannon_Offset         = $046a
+000005r 3               Cannon_PageLoc        = $046b
+000005r 3               Cannon_X_Position     = $0471
+000005r 3               Cannon_Y_Position     = $0477
+000005r 3               Cannon_Timer          = $047d
+000005r 3               
+000005r 3               Whirlpool_Offset      = $046a
+000005r 3               Whirlpool_PageLoc     = $046b
+000005r 3               Whirlpool_LeftExtent  = $0471
+000005r 3               Whirlpool_Length      = $0477
+000005r 3               Whirlpool_Flag        = $047d
+000005r 3               
+000005r 3               VineFlagOffset        = $0398
+000005r 3               VineHeight            = $0399
+000005r 3               VineObjOffset         = $039a
+000005r 3               VineStart_Y_Position  = $039d
+000005r 3               
+000005r 3               Block_Orig_YPos       = $03e4
+000005r 3               Block_BBuf_Low        = $03e6
+000005r 3               Block_Metatile        = $03e8
+000005r 3               Block_PageLoc2        = $03ea
+000005r 3               Block_RepFlag         = $03ec
+000005r 3               Block_ResidualCounter = $03f0
+000005r 3               Block_Orig_XPos       = $03f1
+000005r 3               
+000005r 3               BoundingBox_UL_XPos   = $04ac
+000005r 3               BoundingBox_UL_YPos   = $04ad
+000005r 3               BoundingBox_DR_XPos   = $04ae
+000005r 3               BoundingBox_DR_YPos   = $04af
+000005r 3               BoundingBox_UL_Corner = $04ac
+000005r 3               BoundingBox_LR_Corner = $04ae
+000005r 3               EnemyBoundingBoxCoord = $04b0
+000005r 3               
+000005r 3               PowerUpType           = $39
+000005r 3               
+000005r 3               FireballBouncingFlag  = $3a
+000005r 3               FireballCounter       = $06ce
+000005r 3               FireballThrowingTimer = $0711
+000005r 3               
+000005r 3               HammerEnemyOffset     = $06ae
+000005r 3               JumpCoinMiscOffset    = $06b7
+000005r 3               
+000005r 3               Block_Buffer_1        = $0500
+000005r 3               Block_Buffer_2        = $05d0
+000005r 3               
+000005r 3               HammerThrowingTimer   = $03a2
+000005r 3               HammerBroJumpTimer    = $3c
+000005r 3               Misc_Collision_Flag   = $06be
+000005r 3               
+000005r 3               RedPTroopaOrigXPos    = $0401
+000005r 3               RedPTroopaCenterYPos  = $58
+000005r 3               
+000005r 3               XMovePrimaryCounter   = $a0
+000005r 3               XMoveSecondaryCounter = $58
+000005r 3               
+000005r 3               CheepCheepMoveMFlag   = $58
+000005r 3               CheepCheepOrigYPos    = $0434
+000005r 3               BitMFilter            = $06dd
+000005r 3               
+000005r 3               LakituReappearTimer   = $06d1
+000005r 3               LakituMoveSpeed       = $58
+000005r 3               LakituMoveDirection   = $a0
+000005r 3               
+000005r 3               FirebarSpinState_Low  = $58
+000005r 3               FirebarSpinState_High = $a0
+000005r 3               FirebarSpinSpeed      = $0388
+000005r 3               FirebarSpinDirection  = $34
+000005r 3               
+000005r 3               DuplicateObj_Offset   = $06cf
+000005r 3               NumberofGroupEnemies  = $06d3
+000005r 3               
+000005r 3               BlooperMoveCounter    = $a0
+000005r 3               BlooperMoveSpeed      = $58
+000005r 3               
+000005r 3               BowserBodyControls    = $0363
+000005r 3               BowserFeetCounter     = $0364
+000005r 3               BowserMovementSpeed   = $0365
+000005r 3               BowserOrigXPos        = $0366
+000005r 3               BowserFlameTimerCtrl  = $0367
+000005r 3               BowserFront_Offset    = $0368
+000005r 3               BridgeCollapseOffset  = $0369
+000005r 3               BowserGfxFlag         = $036a
+000005r 3               BowserHitPoints       = $0483
+000005r 3               MaxRangeFromOrigin    = $06dc
+000005r 3               
+000005r 3               BowserFlamePRandomOfs = $0417
+000005r 3               
+000005r 3               PiranhaPlantUpYPos    = $0417
+000005r 3               PiranhaPlantDownYPos  = $0434
+000005r 3               PiranhaPlant_Y_Speed  = $58
+000005r 3               PiranhaPlant_MoveFlag = $a0
+000005r 3               
+000005r 3               FireworksCounter      = $06d7
+000005r 3               ExplosionGfxCounter   = $58
+000005r 3               ExplosionTimerCounter = $a0
+000005r 3               
+000005r 3               ;sound related defines
+000005r 3               Squ2_NoteLenBuffer    = $07b3
+000005r 3               Squ2_NoteLenCounter   = $07b4
+000005r 3               Squ2_EnvelopeDataCtrl = $07b5
+000005r 3               Squ1_NoteLenCounter   = $07b6
+000005r 3               Squ1_EnvelopeDataCtrl = $07b7
+000005r 3               Tri_NoteLenBuffer     = $07b8
+000005r 3               Tri_NoteLenCounter    = $07b9
+000005r 3               Noise_BeatLenCounter  = $07ba
+000005r 3               Squ1_SfxLenCounter    = $07bb
+000005r 3               Squ2_SfxLenCounter    = $07bd
+000005r 3               Sfx_SecondaryCounter  = $07be
+000005r 3               Noise_SfxLenCounter   = $07bf
+000005r 3               
+000005r 3               PauseSoundQueue       = $fa
+000005r 3               Square1SoundQueue     = $ff
+000005r 3               Square2SoundQueue     = $fe
+000005r 3               NoiseSoundQueue       = $fd
+000005r 3               AreaMusicQueue        = $fb
+000005r 3               EventMusicQueue       = $fc
+000005r 3               
+000005r 3               Square1SoundBuffer    = $f1
+000005r 3               Square2SoundBuffer    = $f2
+000005r 3               NoiseSoundBuffer      = $f3
+000005r 3               AreaMusicBuffer       = $f4
+000005r 3               EventMusicBuffer      = $07b1
+000005r 3               PauseSoundBuffer      = $07b2
+000005r 3               
+000005r 3               MusicData             = $f5
+000005r 3               MusicDataLow          = $f5
+000005r 3               MusicDataHigh         = $f6
+000005r 3               MusicOffset_Square2   = $f7
+000005r 3               MusicOffset_Square1   = $f8
+000005r 3               MusicOffset_Triangle  = $f9
+000005r 3               MusicOffset_Noise     = $07b0
+000005r 3               
+000005r 3               NoteLenLookupTblOfs   = $f0
+000005r 3               DAC_Counter           = $07c0
+000005r 3               NoiseDataLoopbackOfs  = $07c1
+000005r 3               NoteLengthTblAdder    = $07c4
+000005r 3               AreaMusicBuffer_Alt   = $07c5
+000005r 3               PauseModeFlag         = $07c6
+000005r 3               GroundMusicHeaderOfs  = $07c7
+000005r 3               AltRegContentFlag     = $07ca
+000005r 3               
+000005r 3               ;-------------------------------------------------------------------------------------
+000005r 3               ;CONSTANTS
+000005r 3               
+000005r 3               ;sound effects constants
+000005r 3               Sfx_SmallJump         = %10000000
+000005r 3               Sfx_Flagpole          = %01000000
+000005r 3               Sfx_Fireball          = %00100000
+000005r 3               Sfx_PipeDown_Injury   = %00010000
+000005r 3               Sfx_EnemySmack        = %00001000
+000005r 3               Sfx_EnemyStomp        = %00000100
+000005r 3               Sfx_Bump              = %00000010
+000005r 3               Sfx_BigJump           = %00000001
+000005r 3               
+000005r 3               Sfx_BowserFall        = %10000000
+000005r 3               Sfx_ExtraLife         = %01000000
+000005r 3               Sfx_PowerUpGrab       = %00100000
+000005r 3               Sfx_TimerTick         = %00010000
+000005r 3               Sfx_Blast             = %00001000
+000005r 3               Sfx_GrowVine          = %00000100
+000005r 3               Sfx_GrowPowerUp       = %00000010
+000005r 3               Sfx_CoinGrab          = %00000001
+000005r 3               
+000005r 3               Sfx_BowserFlame       = %00000010
+000005r 3               Sfx_BrickShatter      = %00000001
+000005r 3               
+000005r 3               ;music constants
+000005r 3               Silence               = %10000000
+000005r 3               
+000005r 3               StarPowerMusic        = %01000000
+000005r 3               PipeIntroMusic        = %00100000
+000005r 3               CloudMusic            = %00010000
+000005r 3               CastleMusic           = %00001000
+000005r 3               UndergroundMusic      = %00000100
+000005r 3               WaterMusic            = %00000010
+000005r 3               GroundMusic           = %00000001
+000005r 3               
+000005r 3               TimeRunningOutMusic   = %01000000
+000005r 3               EndOfLevelMusic       = %00100000
+000005r 3               AltGameOverMusic      = %00010000
+000005r 3               EndOfCastleMusic      = %00001000
+000005r 3               VictoryMusic          = %00000100
+000005r 3               GameOverMusic         = %00000010
+000005r 3               DeathMusic            = %00000001
+000005r 3               
+000005r 3               ;enemy object constants
+000005r 3               GreenKoopa            = $00
+000005r 3               BuzzyBeetle           = $02
+000005r 3               RedKoopa              = $03
+000005r 3               HammerBro             = $05
+000005r 3               Goomba                = $06
+000005r 3               Bloober               = $07
+000005r 3               BulletBill_FrenzyVar  = $08
+000005r 3               GreyCheepCheep        = $0a
+000005r 3               RedCheepCheep         = $0b
+000005r 3               Podoboo               = $0c
+000005r 3               PiranhaPlant          = $0d
+000005r 3               GreenParatroopaJump   = $0e
+000005r 3               RedParatroopa         = $0f
+000005r 3               GreenParatroopaFly    = $10
+000005r 3               Lakitu                = $11
+000005r 3               Spiny                 = $12
+000005r 3               FlyCheepCheepFrenzy   = $14
+000005r 3               FlyingCheepCheep      = $14
+000005r 3               BowserFlame           = $15
+000005r 3               Fireworks             = $16
+000005r 3               BBill_CCheep_Frenzy   = $17
+000005r 3               Stop_Frenzy           = $18
+000005r 3               Bowser                = $2d
+000005r 3               PowerUpObject         = $2e
+000005r 3               VineObject            = $2f
+000005r 3               FlagpoleFlagObject    = $30
+000005r 3               StarFlagObject        = $31
+000005r 3               JumpspringObject      = $32
+000005r 3               BulletBill_CannonVar  = $33
+000005r 3               RetainerObject        = $35
+000005r 3               TallEnemy             = $09
+000005r 3               
+000005r 3               ;other constants
+000005r 3               World1 = 0
+000005r 3               World2 = 1
+000005r 3               World3 = 2
+000005r 3               World4 = 3
+000005r 3               World5 = 4
+000005r 3               World6 = 5
+000005r 3               World7 = 6
+000005r 3               World8 = 7
+000005r 3               Level1 = 0
+000005r 3               Level2 = 1
+000005r 3               Level3 = 2
+000005r 3               Level4 = 3
+000005r 3               
+000005r 3               A_Button              = %10000000
+000005r 3               B_Button              = %01000000
+000005r 3               Select_Button         = %00100000
+000005r 3               Start_Button          = %00010000
+000005r 3               Up_Dir                = %00001000
+000005r 3               Down_Dir              = %00000100
+000005r 3               Left_Dir              = %00000010
+000005r 3               Right_Dir             = %00000001
+000005r 3               
+000005r 3               TitleScreenModeValue  = 0
+000005r 3               GameModeValue         = 1
+000005r 3               VictoryModeValue      = 2
+000005r 3               GameOverModeValue     = 3
+000005r 3               
+000005r 2               
+000005r 2               ; import some pointers from the smb rom
+000005r 2               .import GL_ENTER
+000005r 2               .import GetAreaDataAddrs
+000005r 2               .import LoadAreaPointer
+000005r 2               .import PlayerEndWorld
+000005r 2               .import NonMaskableInterrupt
+000005r 2               
+000005r 2               ; Temporary WRAM space
+000005r 2               .segment "TEMPWRAM"
+000000r 2  00 00 00 00  WRAMSaveHeader: .byte $00, $00, $00, $00, $00
+000004r 2  00           
+000005r 2  00           HeldButtons: .byte $00
+000006r 2  00           ReleasedButtons: .byte $00
+000007r 2  00           LastReadButtons: .byte $00
+000008r 2  00           PressedButtons: .byte $00
+000009r 2  00           CachedChangeAreaTimer: .byte $00
+00000Ar 2  00           LevelEnding: .byte $00
+00000Br 2  00           IsPlaying: .byte $00
+00000Cr 2  00           EnteringFromMenu: .byte $00
+00000Dr 2  00           PendingScoreDrawPosition: .byte $00
+00000Er 2  00           CachedITC: .byte $00
+00000Fr 2  00           PREVIOUS_BANK: .byte $00
+000010r 2               
+000010r 2               ; Persistent WRAM space
+000010r 2               .segment "MENUWRAM"
+000000r 2               MathDigits:
+000000r 2               MathFrameruleDigitStart:
+000000r 2  00 00 00 00    .byte $00, $00, $00, $00, $00 ; selected framerule
+000004r 2  00           
+000005r 2               MathFrameruleDigitEnd:
+000005r 2               MathInGameFrameruleDigitStart:
+000005r 2  00 00 00 00    .byte $00, $00, $00, $00, $00 ; ingame framerule
+000009r 2  00           
+00000Ar 2               MathInGameFrameruleDigitEnd:
+00000Ar 2               
+00000Ar 2               ; $7E00-$7FFF - relocated bank switching code
+00000Ar 2               RelocatedCodeLocation = $7E00
+00000Ar 2               
+00000Ar 2               .segment "PRACTISE_PRG0"
+000005r 2               ; ================================================================
+000005r 2               ;  Full reset of title screen
+000005r 2               ; ----------------------------------------------------------------
+000005r 2               TitleResetInner:
+000005r 2  A2 00            ldx #$00                           ; disable ppu
+000007r 2  8E 00 20         stx PPU_CTRL_REG1                  ;
+00000Ar 2  8E 01 20         stx PPU_CTRL_REG2                  ;
+00000Dr 2  20 rr rr         jsr InitializeMemory               ; clear memory
+000010r 2  20 rr rr         jsr ForceClearWRAM                 ; clear all wram state
+000013r 2  A9 08            lda #8                             ; set starting framerule
+000015r 2  8D rr rr         sta MathFrameruleDigitStart        ;
+000018r 2  AD 02 20     :   lda PPU_STATUS                     ; wait for vblank
+00001Br 2  10 FB            bpl :-                             ;
+00001Dr 2               HotReset2:                             ;
+00001Dr 2  A2 00            ldx #$00                           ; disable ppu again (this is called when resetting to the menu)
+00001Fr 2  8E 00 20         stx PPU_CTRL_REG1                  ;
+000022r 2  8E 01 20         stx PPU_CTRL_REG2                  ;
+000025r 2  A2 FF            ldx #$FF                           ; clear stack
+000027r 2  9A               txs                                ;
+000028r 2  AD 02 20     :   lda PPU_STATUS                     ; wait for vblank
+00002Br 2  10 FB            bpl :-                             ;
+00002Dr 2  20 rr rr         jsr InitBankSwitchingCode          ; copy bankswitching code to wram
+000030r 2  20 rr rr         jsr ReadJoypads                    ; read controller to prevent a held button at startup from registering
+000033r 2  20 rr rr         jsr PrepareScreen                  ; load in palette and background
+000036r 2  20 rr rr         jsr MenuReset                      ; reset main menu
+000039r 2  A9 00            lda #0                             ; clear scroll registers
+00003Br 2  8D 05 20         sta PPU_SCROLL_REG                 ;
+00003Er 2  8D 05 20         sta PPU_SCROLL_REG                 ;
+000041r 2  A9 98            lda #%10011000                     ; enable ppu
+000043r 2  8D 78 07         sta Mirror_PPU_CTRL_REG1           ;
+000046r 2  8D 00 20         sta PPU_CTRL_REG1                  ;
+000049r 2  4C rr rr     :   jmp :-                             ; infinite loop until NMI
+00004Cr 2               ; ================================================================
+00004Cr 2               
+00004Cr 2               ; ================================================================
+00004Cr 2               ;  Hot reset back to the title screen
+00004Cr 2               ; ----------------------------------------------------------------
+00004Cr 2               HotReset:
+00004Cr 2  A9 00            lda #0                             ; kill any playing sounds
+00004Er 2  8D 15 40         sta SND_MASTERCTRL_REG             ;
+000051r 2  20 rr rr         jsr InitializeMemory               ; clear memory
+000054r 2  4C rr rr         jmp HotReset2                      ; then jump to the shared reset code
+000057r 2               ; ================================================================
+000057r 2               
+000057r 2               ; ================================================================
+000057r 2               ;  Handle NMI interrupts while in the title screen
+000057r 2               ; ----------------------------------------------------------------
+000057r 2               TitleNMI:
+000057r 2  AD 78 07         lda Mirror_PPU_CTRL_REG1           ; disable nmi
+00005Ar 2  29 7F            and #%01111111                     ;
+00005Cr 2  8D 78 07         sta Mirror_PPU_CTRL_REG1           ; and update ppu state
+00005Fr 2  8D 00 20         sta PPU_CTRL_REG1                  ;
+000062r 2  2C 02 20         bit PPU_STATUS                     ; flip ppu status
+000065r 2  20 rr rr         jsr WriteVRAMBufferToScreen        ; write any pending vram updates
+000068r 2  A9 00            lda #0                             ; disable playing state
+00006Ar 2  8D rr rr         sta IsPlaying                      ;
+00006Dr 2  8D 05 20         sta PPU_SCROLL_REG                 ; clear scroll registers
+000070r 2  8D 05 20         sta PPU_SCROLL_REG                 ;
+000073r 2  A9 02            lda #$02                           ; copy sprites
+000075r 2  8D 14 40         sta SPR_DMA                        ;
+000078r 2  20 rr rr         jsr ReadJoypads                    ; read controller state
+00007Br 2  20 rr rr         jsr MenuNMI                        ; and run menu code
+00007Er 2  A9 1A            lda #%00011010                     ; set ppu mask state for menu
+000080r 2  8D 01 20         sta PPU_CTRL_REG2                  ;
+000083r 2  AD 78 07         lda Mirror_PPU_CTRL_REG1           ; get ppu mirror state
+000086r 2  09 80            ora #%10000000                     ; and reactivate nmi
+000088r 2  8D 78 07         sta Mirror_PPU_CTRL_REG1           ; update ppu state
+00008Br 2  8D 00 20         sta PPU_CTRL_REG1                  ;
+00008Er 2  40               rti                                ; and we are done for the frame
+00008Fr 2               
+00008Fr 2               ; ================================================================
+00008Fr 2               ;  Sets up the all the fixed graphics for the title screen
+00008Fr 2               ; ----------------------------------------------------------------
+00008Fr 2               PrepareScreen:
+00008Fr 2  A9 3F            lda #$3F                           ; move ppu to palette memory
+000091r 2  8D 06 20         sta PPU_ADDRESS                    ;
+000094r 2  A9 00            lda #$00                           ;
+000096r 2  8D 06 20         sta PPU_ADDRESS                    ;
+000099r 2  A2 00            ldx #0                             ;
+00009Br 2  BD rr rr     :   lda MenuPalette,x                  ; and copy the menu palette
+00009Er 2  8D 07 20         sta PPU_DATA                       ;
+0000A1r 2  E8               inx                                ;
+0000A2r 2  E0 20            cpx #(MenuPaletteEnd-MenuPalette)  ;
+0000A4r 2  D0 F5            bne :-                             ;
+0000A6r 2  A9 20            lda #$20                           ; move ppu to nametable 0
+0000A8r 2  8D 06 20         sta PPU_ADDRESS                    ;
+0000ABr 2  A2 00            ldx #0                             ;
+0000ADr 2  8E 06 20         stx PPU_ADDRESS                    ;
+0000B0r 2  BD rr rr     :   lda BGDATA+$000,x                  ; and copy every page of menu data
+0000B3r 2  8D 07 20         sta PPU_DATA                       ;
+0000B6r 2  E8               inx                                ;
+0000B7r 2  D0 F7            bne :-                             ;
+0000B9r 2  BD rr rr     :   lda BGDATA+$100,x                  ;
+0000BCr 2  8D 07 20         sta PPU_DATA                       ;
+0000BFr 2  E8               inx                                ;
+0000C0r 2  D0 F7            bne :-                             ;
+0000C2r 2  BD rr rr     :   lda BGDATA+$200,x                  ;
+0000C5r 2  8D 07 20         sta PPU_DATA                       ;
+0000C8r 2  E8               inx                                ;
+0000C9r 2  D0 F7            bne :-                             ;
+0000CBr 2  BD rr rr     :   lda BGDATA+$300,x                  ;
+0000CEr 2  8D 07 20         sta PPU_DATA                       ;
+0000D1r 2  E8               inx                                ;
+0000D2r 2  D0 F7            bne :-                             ;
+0000D4r 2  60               rts                                ;
+0000D5r 2               ; ================================================================
+0000D5r 2               
+0000D5r 2               ; ================================================================
+0000D5r 2               ;  Clear RAM and temporary WRAM
+0000D5r 2               ; ----------------------------------------------------------------
+0000D5r 2               InitializeMemory:
+0000D5r 2  A9 00            lda #0                             ; clear A and X
+0000D7r 2  A2 00            ldx #0                             ;
+0000D9r 2  95 00        :   sta $0000,x                        ; clear relevant memory addresses
+0000DBr 2  9D 00 02         sta $0200,x                        ;
+0000DEr 2  9D 00 03         sta $0300,x                        ;
+0000E1r 2  9D 00 04         sta $0400,x                        ;
+0000E4r 2  9D 00 05         sta $0500,x                        ;
+0000E7r 2  9D 00 06         sta $0600,x                        ;
+0000EAr 2  9D 00 07         sta $0700,x                        ;
+0000EDr 2  9D 00 60         sta $6000,x                        ;
+0000F0r 2  E8               inx                                ; and loop for 256 bytes
+0000F1r 2  D0 E6            bne :-                             ;
+0000F3r 2  60               rts                                ;
+0000F4r 2               ; ================================================================
+0000F4r 2               
+0000F4r 2               ; ================================================================
+0000F4r 2               ;  Reinitialize WRAM if needed
+0000F4r 2               ; ----------------------------------------------------------------
+0000F4r 2               InitializeWRAM:
+0000F4r 2  A2 05            ldx #ROMSaveHeaderLen              ; get length of the magic wram header
+0000F6r 2  BD rr rr     :   lda ROMSaveHeader,x                ; check every byte of the header
+0000F9r 2  DD rr rr         cmp WRAMSaveHeader,x               ; does it match?
+0000FCr 2  D0 04            bne ForceClearWRAM                 ; no - clear wram
+0000FEr 2  CA               dex                                ; yes - check next byte
+0000FFr 2  10 F5            bpl :-                             ;
+000101r 2  60               rts                                ;
+000102r 2               ; ================================================================
+000102r 2               
+000102r 2               ; ================================================================
+000102r 2               ;  Clear WRAM state
+000102r 2               ; ----------------------------------------------------------------
+000102r 2               ForceClearWRAM:
+000102r 2                   @Ptr = $0
+000102r 2  A9 60            lda #$60                           ; set starting address to $6000
+000104r 2  85 01            sta @Ptr+1                         ;
+000106r 2  A0 00            ldy #0                             ;
+000108r 2  84 00            sty @Ptr+0                         ;
+00010Ar 2  A2 80            ldx #$80                           ; and mark ending address at $8000
+00010Cr 2  A9 00            lda #$00                           ; clear A
+00010Er 2  91 00        :   sta (@Ptr),y                       ; clear one byte of WRAM
+000110r 2  C8               iny                                ; and advance
+000111r 2  D0 FB            bne :-                             ; for 256 bytes
+000113r 2  E6 01            inc @Ptr+1                         ; then advance to the next page
+000115r 2  E4 01            cpx @Ptr+1                         ; check if we are at the ending page
+000117r 2  D0 F5            bne :-                             ; no - keep clearing data
+000119r 2  A2 05            ldx #ROMSaveHeaderLen              ; otherwise copy the magic wram header
+00011Br 2  BD rr rr     :   lda ROMSaveHeader,x                ;
+00011Er 2  9D rr rr         sta WRAMSaveHeader,x               ;
+000121r 2  CA               dex                                ;
+000122r 2  10 F7            bpl :-                             ;
+000124r 2  60               rts                                ;
+000125r 2               ; ================================================================
+000125r 2               
+000125r 2               ; include all of the relevant title files
+000125r 2               .include "practise.asm"
+000125r 3               ; ===========================================================================
+000125r 3               ;  Start the game!
+000125r 3               ; ---------------------------------------------------------------------------
+000125r 3               TStartGame:
+000125r 3                   @FRDigits = (MathFrameruleDigitEnd-MathFrameruleDigitStart-1)
+000125r 3  20 rr rr         jsr InitBankSwitchingCode                    ; copy utility code to WRAM
+000128r 3  A2 04            ldx #@FRDigits                               ; set up framerule digits
+00012Ar 3               @KeepCopying:                                    ;
+00012Ar 3  BD rr rr         lda MathFrameruleDigitStart, x               ; copy each framerule digit from the menu
+00012Dr 3  9D rr rr         sta MathInGameFrameruleDigitStart, x         ;
+000130r 3  CA               dex                                          ;
+000131r 3  10 F7            bpl @KeepCopying                             ;
+000133r 3  18               clc                                          ;
+000134r 3  A9 01            lda #1                                       ; set flag indicating we are entering from the menu
+000136r 3  8D rr rr         sta EnteringFromMenu                         ;
+000139r 3  8D 70 07         sta OperMode                                 ; set starting opermode to "gamemode"
+00013Cr 3  8D rr rr         sta IsPlaying                                ; mark that we are in game mode
+00013Fr 3  4A               lsr a                                        ; clear A
+000140r 3  8D 72 07         sta OperMode_Task                            ; clear opermode task value
+000143r 3  85 0E            sta GameEngineSubroutine                     ; clear game engine task
+000145r 3  8D 47 07         sta TimerControl                             ; mark the game as running
+000148r 3  8D rr rr         sta PendingScoreDrawPosition                 ; clear pending status bar draw flag
+00014Br 3  8D 00 20         sta PPU_CTRL_REG1                            ; diable rendering
+00014Er 3  8D 78 07         sta Mirror_PPU_CTRL_REG1                     ;
+000151r 3  8D 01 20         sta PPU_CTRL_REG2                            ;
+000154r 3  8D 15 40         sta $4015                                    ; silence music
+000157r 3  85 FC            sta EventMusicQueue                          ; stop music queue
+000159r 3  AE rr rr         ldx SettablesWorld                           ; copy menu world number
+00015Cr 3  8E 5F 07         stx WorldNumber                              ;
+00015Fr 3  AE rr rr         ldx SettablesLevel                           ; copy menu level number
+000162r 3  8E 5C 07         stx LevelNumber                              ;
+000165r 3  AE rr rr         ldx SettablesPUP                             ; get menu powerup state
+000168r 3  BD rr rr         lda @StatusSizes,x                           ; get player size based on menu state
+00016Br 3  8D 54 07         sta PlayerSize                               ; and update player size
+00016Er 3  BD rr rr         lda @StatusPowers,x                          ; get player power state based on menu state
+000171r 3  8D 56 07         sta PlayerStatus                             ; and update player status
+000174r 3  A9 02            lda #$2                                      ; give player 3 lives
+000176r 3  8D 5A 07         sta NumberofLives                            ;
+000179r 3  A9 04            lda #$4                                      ; set the interval timer to a hardcoded value
+00017Br 3  8D 7F 07         sta IntervalTimerControl                     ;
+00017Er 3  EE 57 07         inc FetchNewGameTimerFlag                    ; tell the game to reload the game timer
+000181r 3  4C rr rr         jmp BANK_AdvanceToLevel                      ; transition to the wram code to start the game
+000184r 3               @StatusSizes:
+000184r 3  01 00 00 00  .byte $1, $0, $0, $0, $1, $1
+000188r 3  01 01        
+00018Ar 3               @StatusPowers:
+00018Ar 3  00 01 02 00  .byte $0, $1, $2, $0, $1, $2
+00018Er 3  01 02        
+000190r 3               ; ===========================================================================
+000190r 3               
+000190r 3               ; ===========================================================================
+000190r 3               ;  Practise routine per frame routine
+000190r 3               ; ---------------------------------------------------------------------------
+000190r 3               PractiseNMI:
+000190r 3  AD rr rr         lda EnteringFromMenu                         ; are we currently entering from the menu?
+000193r 3  F0 01            beq @ClearPractisePrintScore                 ; no - then we can run our routine
+000195r 3  60               rts                                          ; otherwise, we're loading, so just return
+000196r 3               @ClearPractisePrintScore:                        ;
+000196r 3  AD 00 03         lda VRAM_Buffer1_Offset                      ; check if we have pending ppu draws
+000199r 3  D0 03            bne @IncrementFrameruleCounter               ; yes - skip ahead
+00019Br 3  8D rr rr         sta PendingScoreDrawPosition                 ; no - clear pending vram address for framerule drawing
+00019Er 3               @IncrementFrameruleCounter:                      ;
+00019Er 3  20 rr rr         jsr IncrementFrameruleCounter                ; increment the base10 framerule counter
+0001A1r 3  20 rr rr         jsr CheckForLevelEnd                         ; run level transition handler
+0001A4r 3  20 rr rr         jsr CheckJumpingState                        ; run jump handler
+0001A7r 3  20 rr rr         jsr CheckAreaTimer                           ; run area transition timing handler
+0001AAr 3               @CheckUpdateStatusbarValues:                     ;
+0001AAr 3  A5 09            lda FrameCounter                             ; get current frame counter
+0001ACr 3  29 03            and #3                                       ; and just make sure we're in a specific 4 frame spot
+0001AEr 3  C9 02            cmp #2                                       ;
+0001B0r 3  D0 03            bne @CheckInput                              ; if not, skip ahead
+0001B2r 3  20 rr rr         jsr RedrawHighFreqStatusbar                  ; otherwise update status bar
+0001B5r 3               @CheckInput:                                     ;
+0001B5r 3  AD 4A 07         lda JoypadBitMask                            ; get current joypad state
+0001B8r 3  29 30            and #(Select_Button | Start_Button)          ; mask out all but select and start
+0001BAr 3  F0 24            beq @Done                                    ; neither are held - nothing more to do here
+0001BCr 3  20 rr rr         jsr ReadJoypads                              ; re-read joypad state, to avoid filtering from the game
+0001BFr 3               @CheckForRestartLevel:                           ;
+0001BFr 3  C9 28            cmp #(Up_Dir | Select_Button)                ; check if select + up are held
+0001C1r 3  D0 0E            bne @CheckForReset                           ; no - skip ahead
+0001C3r 3  A9 00            lda #0                                       ; yes - we are restarting the level
+0001C5r 3  8D 00 20         sta PPU_CTRL_REG1                            ; disable screen rendering
+0001C8r 3  8D 01 20         sta PPU_CTRL_REG2                            ;
+0001CBr 3  20 rr rr         jsr InitializeMemory                         ; clear memory
+0001CEr 3  4C rr rr         jmp TStartGame                               ; and start the game
+0001D1r 3               @CheckForReset:                                  ;
+0001D1r 3  C9 24            cmp #(Down_Dir | Select_Button)              ; check if select + down are held
+0001D3r 3  D0 0B            bne @Done                                    ; no - skip ahead
+0001D5r 3  A9 00            lda #0                                       ; yes - we are returning to the title screen
+0001D7r 3  8D 00 20         sta PPU_CTRL_REG1                            ; disable screen rendering
+0001DAr 3  8D 01 20         sta PPU_CTRL_REG2                            ;
+0001DDr 3  4C rr rr         jmp HotReset                                 ; and reset the game
+0001E0r 3               @Done:                                           ;
+0001E0r 3  60               rts                                          ;
+0001E1r 3               ; ===========================================================================
+0001E1r 3               
+0001E1r 3               ; ===========================================================================
+0001E1r 3               ;  Handle new area loading loading
+0001E1r 3               ; ---------------------------------------------------------------------------
+0001E1r 3               PractiseEnterStage:
+0001E1r 3                   @FRDigitCount = MathFrameruleDigitEnd - MathFrameruleDigitStart - 1
+0001E1r 3  A9 03            lda #3                                       ; set life counter so we can't lose the game
+0001E3r 3  8D 5A 07         sta NumberofLives                            ;
+0001E6r 3  A9 98            lda #152                                     ; position spr0
+0001E8r 3  8D 03 02         sta $203                                     ;
+0001EBr 3  AD rr rr         lda EnteringFromMenu                         ; check if we're entering from the menu
+0001EEr 3  F0 0F            beq @SaveToMenu                              ; no, the player beat a level, update the menu state
+0001F0r 3  38               sec                                          ; yes, the player is starting a new game
+0001F1r 3  A5 09            lda FrameCounter                             ; we need to offset the frame counter a little bit
+0001F3r 3  E9 06            sbc #6                                       ;
+0001F5r 3  85 09            sta FrameCounter                             ;
+0001F7r 3  20 rr rr         jsr RNGQuickResume                           ; and load the rng state
+0001FAr 3  CE rr rr         dec EnteringFromMenu                         ; then mark that we've entered from the menu, so this doesn't happen again
+0001FDr 3  F0 2B            beq @Shared                                  ; and skip ahead to avoid saving the state for no reason
+0001FFr 3               @SaveToMenu:                                     ;
+0001FFr 3  AD rr rr         lda LevelEnding                              ; check if we are transitioning to a new level
+000202r 3  F0 26            beq @Shared                                  ; no - skip ahead and enter the game
+000204r 3  A2 04            ldx #@FRDigitCount                           ; yes - copy the framerule to the menu
+000206r 3  BD rr rr     :   lda MathInGameFrameruleDigitStart,x          ;
+000209r 3  9D rr rr         sta MathFrameruleDigitStart,x                ;
+00020Cr 3  CA               dex                                          ;
+00020Dr 3  10 F7            bpl :-                                       ;
+00020Fr 3  AD 5F 07         lda WorldNumber                              ; copy current world and level to the menu
+000212r 3  8D rr rr         sta SettablesWorld                           ;
+000215r 3  AD 5C 07         lda LevelNumber                              ;
+000218r 3  8D rr rr         sta SettablesLevel                           ;
+00021Br 3  AD 54 07         lda PlayerSize                               ; get player powerup state
+00021Er 3  0A               asl a                                        ; shift up a couple of bits to make room for powerup state
+00021Fr 3  0A               asl a                                        ;
+000220r 3  0D 56 07         ora PlayerStatus                             ; combine with powerup state
+000223r 3  AA               tax                                          ; copy to X
+000224r 3  BD rr rr         lda @PUpStates,x                             ; and get the menu selection values from the players current state
+000227r 3  8D rr rr         sta SettablesPUP                             ; and write to menu powerup state
+00022Ar 3               @Shared:                                         ;
+00022Ar 3  A9 00            lda #0                                       ; clear out some starting state
+00022Cr 3  8D rr rr         sta CachedChangeAreaTimer                    ;
+00022Fr 3  8D rr rr         sta LevelEnding                              ;
+000232r 3  4C rr rr         jmp RedrawLowFreqStatusbar                   ; and update the status line
+000235r 3               @PUpStates:
+000235r 3  03           .byte $3                                         ; size = 0, status = 0. big vuln. mario
+000236r 3  01           .byte $1                                         ; size = 0, status = 1. big super mario
+000237r 3  02           .byte $2                                         ; size = 0, status = 2. big fire mario
+000238r 3  00           .byte $0                                         ; size = 1, status = 0. small vuln. mario
+000239r 3  05           .byte $5                                         ; size = 1, status = 1. small super mario
+00023Ar 3  06           .byte $6                                         ; size = 1, status = 2. small fire mario
+00023Br 3               ; ===========================================================================
+00023Br 3               
+00023Br 3               ; ===========================================================================
+00023Br 3               ;  Handle level transitions
+00023Br 3               ; ---------------------------------------------------------------------------
+00023Br 3               CheckForLevelEnd:
+00023Br 3  AD rr rr         lda LevelEnding                              ; have we already detected the level end?
+00023Er 3  D0 1E            bne @Done                                    ; if so - exit
+000240r 3  AD 3C 07         lda ScreenRoutineTask
+000243r 3  C9 07            cmp #7
+000245r 3  F0 14            beq @LevelEnding
+000247r 3  AD 46 07         lda StarFlagTaskControl                      ; check the current starflag state
+00024Ar 3  C9 04            cmp #4                                       ; are we in the final starflag task?
+00024Cr 3  D0 10            bne @Done                                    ; no - exit
+00024Er 3  AD 7F 07         lda IntervalTimerControl                     ; cache the current interval timer
+000251r 3  8D rr rr         sta CachedITC                                ;
+000254r 3  18               clc                                          ;
+000255r 3  20 rr rr         jsr ChangeTopStatusXToRemains                ; change the 'X' in the title to 'R'
+000258r 3  20 rr rr         jsr RedrawLowFreqStatusbar                   ; and redraw the status bar
+00025Br 3               @LevelEnding:
+00025Br 3  EE rr rr         inc LevelEnding                              ; yes - mark the level end as ended
+00025Er 3               @Done:                                           ;
+00025Er 3  60               rts                                          ;
+00025Fr 3               ; ===========================================================================
+00025Fr 3               
+00025Fr 3               ; ===========================================================================
+00025Fr 3               ;  Handle area transitions (pipes, etc)
+00025Fr 3               ; ---------------------------------------------------------------------------
+00025Fr 3               CheckAreaTimer:
+00025Fr 3  AD rr rr         lda CachedChangeAreaTimer                    ; have we already handled the area change?
+000262r 3  D0 15            bne @Done                                    ; yes - exit
+000264r 3  AD DE 06         lda ChangeAreaTimer                          ; no - check if we should handle it
+000267r 3  F0 10            beq @Done                                    ; no - exit
+000269r 3  8D rr rr         sta CachedChangeAreaTimer                    ; yes - cache the timer value
+00026Cr 3  AD 7F 07         lda IntervalTimerControl                     ; get the interval timer
+00026Fr 3               @Store2:                                         ;
+00026Fr 3  8D rr rr         sta CachedITC                                ; and cache it as well
+000272r 3  18               clc                                          ;
+000273r 3  20 rr rr         jsr ChangeTopStatusXToRemains                ; change the 'X' in the title to 'R'
+000276r 3  20 rr rr         jsr RedrawLowFreqStatusbar                   ; and redraw the status bar
+000279r 3               @Done:                                           ;
+000279r 3  60               rts                                          ;
+00027Ar 3               ; ===========================================================================
+00027Ar 3               
+00027Ar 3               ; ===========================================================================
+00027Ar 3               ;  Handle player jumping
+00027Ar 3               ; ---------------------------------------------------------------------------
+00027Ar 3               CheckJumpingState:
+00027Ar 3  AD 82 07         lda JumpSwimTimer                            ; check jump timer
+00027Dr 3  C9 20            cmp #$20                                     ; is it the max value (player just jumped)
+00027Fr 3  D0 03            bne @Done                                    ; no - exit
+000281r 3  20 rr rr         jsr RedrawLowFreqStatusbar                   ; yes - redraw the status bar
+000284r 3               @Done:                                           ;
+000284r 3  60               rts                                          ; done!
+000285r 3               ; ===========================================================================
+000285r 3               
+000285r 3               ; ===========================================================================
+000285r 3               ;  Advance to the next base 10 framerule digit
+000285r 3               ; ---------------------------------------------------------------------------
+000285r 3               IncrementFrameruleCounter:
+000285r 3                   @DigitOffset = (MathInGameFrameruleDigitStart-MathDigits)
+000285r 3  AD 47 07         lda TimerControl                             ; check if the game is running
+000288r 3  D0 0F            bne @Done                                    ; no - exit
+00028Ar 3  AC 7F 07         ldy IntervalTimerControl                     ; get the interval timer
+00028Dr 3  C0 01            cpy #1                                       ; are we at the end of the interval?
+00028Fr 3  D0 08            bne @Done                                    ; no - exit
+000291r 3  18               clc                                          ;
+000292r 3  A9 01            lda #1                                       ; we want to add 1 to the digits
+000294r 3  A2 05            ldx #@DigitOffset                            ; get the offset to the digit we are incrementing
+000296r 3  4C rr rr         jmp B10Add                                   ; and run base 10 addition
+000299r 3               @Done:                                           ;
+000299r 3  60               rts                                          ;
+00029Ar 3               ; ===========================================================================
+00029Ar 3               
+00029Ar 3               ; ===========================================================================
+00029Ar 3               ;  Handle when the game wants to redraw the MARIO / TIME text at the top
+00029Ar 3               ; ---------------------------------------------------------------------------
+00029Ar 3               PractiseWriteTopStatusLine:
+00029Ar 3  18               clc                                          ;
+00029Br 3  AC 00 03         ldy VRAM_Buffer1_Offset                      ; get current vram offset
+00029Er 3  A9 2D            lda #(@TopStatusTextEnd-@TopStatusText+1)    ; get text length
+0002A0r 3  6D 00 03         adc VRAM_Buffer1_Offset                      ; add to vram offset
+0002A3r 3  8D 00 03         sta VRAM_Buffer1_Offset                      ; and store new offset
+0002A6r 3  A2 00            ldx #0                                       ;
+0002A8r 3               @CopyData:                                       ;
+0002A8r 3  BD rr rr         lda @TopStatusText,x                         ; copy bytes of the status bar text to vram
+0002ABr 3  99 01 03         sta VRAM_Buffer1,y                           ;
+0002AEr 3  C8               iny                                          ; advance vram offset
+0002AFr 3  E8               inx                                          ; advance text offset
+0002B0r 3  E0 2C            cpx #(@TopStatusTextEnd-@TopStatusText)      ; check if we're at the end
+0002B2r 3  D0 F4            bne @CopyData                                ; if not, loop
+0002B4r 3  A9 00            lda #0                                       ; then set null terminator at the end
+0002B6r 3  99 01 03         sta VRAM_Buffer1,y                           ;
+0002B9r 3  EE 3C 07         inc ScreenRoutineTask                        ; and advance the screen routine task
+0002BCr 3  60               rts                                          ; done
+0002BDr 3               @TopStatusText:                                  ;
+0002BDr 3  20 43 15 1B    .byte $20, $43,  21, "RULE x SOCKS TO FRAME"   ;
+0002C1r 3  1E 15 0E 24  
+0002C5r 3  29 24 1C 18  
+0002D5r 3  20 59 04 1D    .byte $20, $59,   4, "TIME"                    ;
+0002D9r 3  12 16 0E     
+0002DCr 3  20 73 02 2E    .byte $20, $73,   2, $2e, $29                  ; coin that shows next to the coin counter
+0002E0r 3  29           
+0002E1r 3  23 C0 7F AA    .byte $23, $c0, $7f, $aa                       ; tile attributes for the top row, sets palette
+0002E5r 3  23 C4 01 E0    .byte $23, $c4, $01, %11100000                 ; set palette for the flashing coin
+0002E9r 3               @TopStatusTextEnd:
+0002E9r 3  00              .byte $00
+0002EAr 3               ; ===========================================================================
+0002EAr 3               
+0002EAr 3               ; ===========================================================================
+0002EAr 3               ;  Handle the game requesting redrawing the bottom status bar
+0002EAr 3               ; ---------------------------------------------------------------------------
+0002EAr 3               PractiseWriteBottomStatusLine:
+0002EAr 3  AD rr rr         lda LevelEnding                              ; are we transitioning to a new level?
+0002EDr 3  D0 06            bne :+                                       ; yes, don't update the itc value
+0002EFr 3  AD 7F 07         lda IntervalTimerControl                     ; no, get the current interval timer
+0002F2r 3  8D rr rr         sta CachedITC                                ; and store it in the cached value
+0002F5r 3  20 rr rr     :   jsr RedrawLowFreqStatusbar                   ; redraw the status bar
+0002F8r 3  EE 3C 07         inc ScreenRoutineTask                        ; and advance to the next smb screen routine
+0002FBr 3  60               rts                                          ;
+0002FCr 3               ; ===========================================================================
+0002FCr 3               
+0002FCr 3               ; ===========================================================================
+0002FCr 3               ;  Place an "R" instead of "x" in the title screen during level transitions
+0002FCr 3               ; ---------------------------------------------------------------------------
+0002FCr 3               ChangeTopStatusXToRemains:
+0002FCr 3  18               clc                                          ;
+0002FDr 3  AD 00 03         lda VRAM_Buffer1_Offset                      ; get current vram offset
+000300r 3  A8               tay                                          ;
+000301r 3  69 04            adc #4                                       ; and advance it by 4
+000303r 3  8D 00 03         sta VRAM_Buffer1_Offset                      ; store the new offset
+000306r 3  A9 20            lda #$20                                     ; write the ppu address to update
+000308r 3  99 01 03         sta VRAM_Buffer1+0, y                        ;
+00030Br 3  A9 48            lda #$48                                     ;
+00030Dr 3  99 02 03         sta VRAM_Buffer1+1, y                        ;
+000310r 3  A9 01            lda #1                                       ; we are writing a single byte
+000312r 3  99 03 03         sta VRAM_Buffer1+2, y                        ;
+000315r 3  A9 1B            lda #'R'                                     ; and that byte is an R
+000317r 3  99 04 03         sta VRAM_Buffer1+3, y                        ;
+00031Ar 3  A9 00            lda #0                                       ; set the null terminator
+00031Cr 3  99 05 03         sta VRAM_Buffer1+4, y                        ;
+00031Fr 3  60               rts                                          ; and finish
+000320r 3               ; ===========================================================================
+000320r 3               
+000320r 3               ; ===========================================================================
+000320r 3               ;  Redraw the status bar portion that updates less often
+000320r 3               ; ---------------------------------------------------------------------------
+000320r 3               RedrawLowFreqStatusbar:
+000320r 3  18               clc                                          ;
+000321r 3  AC rr rr         ldy PendingScoreDrawPosition                 ; check if we have a pending draw that hasn't been sent to the ppu
+000324r 3  D0 12            bne @RefreshBufferX                          ; yes - skip ahead and refresh the buffer to avoid overloading the ppu
+000326r 3  AC 00 03         ldy VRAM_Buffer1_Offset                      ; no - get the current buffer offset
+000329r 3  C8               iny                                          ; increment past the ppu location
+00032Ar 3  C8               iny                                          ;
+00032Br 3  C8               iny                                          ;
+00032Cr 3  8C rr rr         sty PendingScoreDrawPosition                 ; and store it as our pending position
+00032Fr 3  20 rr rr         jsr @PrintRule                               ; draw the current framerule value
+000332r 3  20 rr rr         jsr @PrintFramecounter                       ; draw the current framecounter value
+000335r 3  A6 08            ldx ObjectOffset                             ; load object offset, our caller might expect it to be unchanged
+000337r 3  60               rts                                          ; and exit
+000338r 3               @RefreshBufferX:                                 ;
+000338r 3  20 rr rr         jsr @PrintRuleDataAtY                        ; refresh pending framerule value
+00033Br 3  98               tya                                          ; get the buffer offset we're drawing to
+00033Cr 3  69 09            adc #9                                       ; and shift over to the framecounter position
+00033Er 3  A8               tay                                          ;
+00033Fr 3  20 rr rr         jsr @PrintFramecounterDataAtY                ; and then refresh the pending frame ounter value
+000342r 3  A6 08            ldx ObjectOffset                             ; load object offset, our caller might expect it to be unchanged
+000344r 3  60               rts                                          ; and exit
+000345r 3               ; ---------------------------------------------------------------------------
+000345r 3               ;  Copy current framerule number to VRAM
+000345r 3               ; ---------------------------------------------------------------------------
+000345r 3               @PrintRule:
+000345r 3  AD 00 03         lda VRAM_Buffer1_Offset                      ; get the current buffer offset
+000348r 3  A8               tay                                          ;
+000349r 3  69 09            adc #(3+6)                                   ; shift over based on length of the framerule text
+00034Br 3  8D 00 03         sta VRAM_Buffer1_Offset                      ; store the ppu location of the framerule counter
+00034Er 3  A9 20            lda #$20                                     ;
+000350r 3  99 01 03         sta VRAM_Buffer1,y                           ;
+000353r 3  A9 63            lda #$63                                     ;
+000355r 3  99 02 03         sta VRAM_Buffer1+1,y                         ;
+000358r 3  A9 06            lda #$06                                     ; store the number of digits to draw
+00035Ar 3  99 03 03         sta VRAM_Buffer1+2,y                         ;
+00035Dr 3  C8               iny                                          ; increment past the ppu location
+00035Er 3  C8               iny                                          ;
+00035Fr 3  C8               iny                                          ;
+000360r 3  A9 00            lda #0                                       ; place our null terminator
+000362r 3  99 07 03         sta VRAM_Buffer1+6,y                         ;
+000365r 3  A9 24            lda #$24                                     ; and write a space past the framerule (masks out smb1 '0' after the score)
+000367r 3  99 05 03         sta VRAM_Buffer1+4,y                         ;
+00036Ar 3               @PrintRuleDataAtY:
+00036Ar 3  AD rr rr         lda CachedITC                                ; get the interval timer for when we entered the room
+00036Dr 3  99 06 03         sta VRAM_Buffer1+5,y                         ; and store it in the buffer
+000370r 3  AD rr rr         lda MathInGameFrameruleDigitStart+3          ; then copy the framerule numbers into the buffer
+000373r 3  99 01 03         sta VRAM_Buffer1+0,y                         ;
+000376r 3  AD rr rr         lda MathInGameFrameruleDigitStart+2          ;
+000379r 3  99 02 03         sta VRAM_Buffer1+1,y                         ;
+00037Cr 3  AD rr rr         lda MathInGameFrameruleDigitStart+1          ;
+00037Fr 3  99 03 03         sta VRAM_Buffer1+2,y                         ;
+000382r 3  AD rr rr         lda MathInGameFrameruleDigitStart+0          ;
+000385r 3  99 04 03         sta VRAM_Buffer1+3,y                         ;
+000388r 3  60               rts                                          ;
+000389r 3               ; ---------------------------------------------------------------------------
+000389r 3               ;  Copy current frame number to VRAM
+000389r 3               ; ---------------------------------------------------------------------------
+000389r 3               @PrintFramecounter:
+000389r 3  AD 00 03         lda VRAM_Buffer1_Offset                      ; get current vram offset
+00038Cr 3  A8               tay                                          ;
+00038Dr 3  69 06            adc #(3+3)                                   ; add 3 for vram offset, 3 for values to draw
+00038Fr 3  8D 00 03         sta VRAM_Buffer1_Offset                      ; save new vram offset
+000392r 3  A9 20            lda #$20                                     ; store the ppu location of the frame number
+000394r 3  99 01 03         sta VRAM_Buffer1,y                           ;
+000397r 3  A9 75            lda #$75                                     ;
+000399r 3  99 02 03         sta VRAM_Buffer1+1,y                         ;
+00039Cr 3  A9 03            lda #$03                                     ; store the number of digits to draw
+00039Er 3  99 03 03         sta VRAM_Buffer1+2,y                         ;
+0003A1r 3  C8               iny                                          ; advance y to the end of the buffer to write
+0003A2r 3  C8               iny                                          ;
+0003A3r 3  C8               iny                                          ;
+0003A4r 3  A9 00            lda #0                                       ; place our null terminator
+0003A6r 3  99 04 03         sta VRAM_Buffer1+3,y                         ;
+0003A9r 3               @PrintFramecounterDataAtY:                       ;
+0003A9r 3  A5 09            lda FrameCounter                             ; get the current frame number
+0003ABr 3  20 rr rr         jsr B10DivBy10                               ; divide by 10
+0003AEr 3  99 03 03         sta VRAM_Buffer1+2,y                         ; store remainder in vram buffer
+0003B1r 3  8A               txa                                          ; get the result of the divide
+0003B2r 3  20 rr rr         jsr B10DivBy10                               ; divide by 10
+0003B5r 3  99 02 03         sta VRAM_Buffer1+1,y                         ; store remainder in vram buffer
+0003B8r 3  8A               txa                                          ; get the result of the divide
+0003B9r 3  99 01 03         sta VRAM_Buffer1+0,y                         ; and store it in vram
+0003BCr 3  60               rts                                          ;
+0003BDr 3               ; ===========================================================================
+0003BDr 3               
+0003BDr 3               ; ===========================================================================
+0003BDr 3               ;  Update and draw status bar values
+0003BDr 3               ; ---------------------------------------------------------------------------
+0003BDr 3               RedrawHighFreqStatusbar:
+0003BDr 3                   @SockSubX = $2                               ; memory locations that sockfolder is stored in
+0003BDr 3                   @SockX    = $3                               ;
+0003BDr 3  AD 00 03         lda VRAM_Buffer1_Offset                      ; check if there are pending ppu updates
+0003C0r 3  F0 01            beq :+                                       ; no - skip ahead to update status bar
+0003C2r 3  60               rts                                          ; yes - don't overload the ppu
+0003C3r 3  20 rr rr     :   jsr RecalculateSockfolder                    ; calculate new sockfolder value
+0003C6r 3               
+0003C6r 3  A2 00            ldx #0                                       ; clear X
+0003C8r 3  A9 20            lda #$20                                     ; write ppu location of status bar to vram buffer
+0003CAr 3  9D 01 03         sta VRAM_Buffer1+0,x                         ;
+0003CDr 3  A9 6A            lda #$6A                                     ;
+0003CFr 3  9D 02 03         sta VRAM_Buffer1+1,x                         ;
+0003D2r 3  A9 08            lda #8                                       ; write number of bytes to draw
+0003D4r 3  9D 03 03         sta VRAM_Buffer1+2,x                         ;
+0003D7r 3  A9 0B            lda #(8+3)                                   ; and update vram buffer offset to new location
+0003D9r 3  8D 00 03         sta VRAM_Buffer1_Offset                      ;
+0003DCr 3  A9 24            lda #$24                                     ; write spaces to a couple of locations
+0003DEr 3  9D 06 03         sta VRAM_Buffer1+3+2,x                       ;
+0003E1r 3  9D 09 03         sta VRAM_Buffer1+3+5,x                       ;
+0003E4r 3  A9 00            lda #0                                       ; write null terminator
+0003E6r 3  9D 0C 03         sta VRAM_Buffer1+3+8,x                       ;
+0003E9r 3               
+0003E9r 3  A5 03            lda @SockX                                   ; get sockfolder x position
+0003EBr 3  29 0F            and #$0F                                     ; mask off the high nibble
+0003EDr 3  9D 04 03         sta VRAM_Buffer1+3+0,x                       ; and write that byte to the vram buffer
+0003F0r 3  A5 02            lda @SockSubX                                ; get sockfolder subpixel x position
+0003F2r 3  4A               lsr                                          ; and shift down to the low nibble
+0003F3r 3  4A               lsr                                          ;
+0003F4r 3  4A               lsr                                          ;
+0003F5r 3  4A               lsr                                          ;
+0003F6r 3  9D 05 03         sta VRAM_Buffer1+3+1,x                       ; and write that byte to the vram buffer
+0003F9r 3  AD 05 07         lda Player_X_MoveForce                       ; get the current player subpixel
+0003FCr 3  A8               tay                                          ; copy to Y
+0003FDr 3  29 0F            and #$0F                                     ; mask off the high nibble
+0003FFr 3  9D 08 03         sta VRAM_Buffer1+3+4,x ; Y                   ; and write that byte to the vram buffer
+000402r 3  98               tya                                          ; restore full value from Y
+000403r 3  4A               lsr                                          ; and shift down to the low nibble
+000404r 3  4A               lsr                                          ;
+000405r 3  4A               lsr                                          ;
+000406r 3  4A               lsr                                          ;
+000407r 3  9D 07 03         sta VRAM_Buffer1+3+3,x ; Y                   ; and write that byte to the vram buffer
+00040Ar 3  AD 50 07         lda AreaPointer                              ; get the pointer to where warp pipes direct player
+00040Dr 3  A8               tay                                          ; copy to Y
+00040Er 3  29 0F            and #$0F                                     ; mask off the high nibble
+000410r 3  9D 0B 03         sta VRAM_Buffer1+3+7,x ; X                   ; and write that byte to the vram buffer
+000413r 3  98               tya                                          ; restore full value from Y
+000414r 3  4A               lsr                                          ; and shift down to the low nibble
+000415r 3  4A               lsr                                          ;
+000416r 3  4A               lsr                                          ;
+000417r 3  4A               lsr                                          ;
+000418r 3  9D 0A 03         sta VRAM_Buffer1+3+6,x ; X                   ; and write that byte to the vram buffer
+00041Br 3               @skip:                                           ;
+00041Br 3  60               rts                                          ;
+00041Cr 3               ; ===========================================================================
+00041Cr 3               
+00041Cr 3               
+00041Cr 3               ; ===========================================================================
+00041Cr 3               ;  Calculate the current sockfolder value
+00041Cr 3               ; ---------------------------------------------------------------------------
+00041Cr 3               ; Sockfolder is effectively calculated by the following formula:
+00041Cr 3               ;  Player_X_Position + ((0xFF - Player_Y_Position) / MaximumYSpeed) * MaximumXSpeed
+00041Cr 3               ;
+00041Cr 3               ; So that will give you the position that mario would be when he reaches the
+00041Cr 3               ; bottom of the screen assuming the player is falling at full speed.
+00041Cr 3               ;
+00041Cr 3               ; Here's a little javascript snippet that creates a 16 bit lookup table of sockfolder values:
+00041Cr 3               ;
+00041Cr 3               ;; // NTSC:
+00041Cr 3               ;; let max_x_speed = 0x0280; // maximum x speed in subpixels
+00041Cr 3               ;; let max_y_speed = 0x04;   // maximum y speed in pixels
+00041Cr 3               ;; // PAL:
+00041Cr 3               ;; //let max_x_speed = 0x0300; // maximum x speed in subpixels
+00041Cr 3               ;; //let max_y_speed = 0x05;   // maximum y speed in pixels
+00041Cr 3               ;;
+00041Cr 3               ;; let values = [];
+00041Cr 3               ;; for (let i=0xFF; i>=0x00; --i) {
+00041Cr 3               ;;     let value = Math.floor(i/max_y_speed)*max_x_speed;
+00041Cr 3               ;;     let format = Math.round(value).toString(16).padStart(4,'0');
+00041Cr 3               ;;     values.push('$' + format);
+00041Cr 3               ;; };
+00041Cr 3               ;;
+00041Cr 3               ;; let items_per_row = 0x8;
+00041Cr 3               ;; for (let i=0; i<(values.length/items_per_row); ++i) {
+00041Cr 3               ;;     let start = i * items_per_row;
+00041Cr 3               ;;     let end = (i * items_per_row) + items_per_row;
+00041Cr 3               ;;     let line = values.slice(start, end).join(',')
+00041Cr 3               ;;     console.log('.byte ' + line + ' ; range ' +  start.toString(16) + ' to ' + (end-1).toString(16));
+00041Cr 3               ;; }
+00041Cr 3               ;
+00041Cr 3               ; ---------------------------------------------------------------------------
+00041Cr 3               RecalculateSockfolder:
+00041Cr 3                   @DataTemp = $4                               ; temp value used for some maths
+00041Cr 3                   @DataSubX = $2                               ; sockfolder subpixel x value
+00041Cr 3                   @DataX    = $3                               ; sockfolder pixel x value
+00041Cr 3  AD 00 04         lda SprObject_X_MoveForce                    ; get subpixel x position
+00041Fr 3  85 02            sta @DataSubX                                ; and store it in our temp data
+000421r 3  A5 86            lda Player_X_Position                        ; get x position
+000423r 3  85 03            sta @DataX                                   ; and store it in our temp data
+000425r 3  A5 CE            lda Player_Y_Position                        ; get y position
+000427r 3  49 FF            eor #$FF                                     ; invert the bits, now $FF is the top of the screen
+000429r 3  4A               lsr a                                        ; divide pixel position by 8
+00042Ar 3  4A               lsr a                                        ;
+00042Br 3  4A               lsr a                                        ;
+00042Cr 3  90 0F            bcc @sock1                                   ; if we're on the top half of tile 'tile', we will land 2.5 pixels later.
+00042Er 3  48               pha                                          ; so store the current value
+00042Fr 3  18               clc                                          ;
+000430r 3  A5 02            lda @DataSubX                                ; get subpixel x position
+000432r 3  A9 80            lda #$80                                     ; and increase it by half
+000434r 3  85 02            sta @DataSubX                                ; and store it back
+000436r 3  A5 03            lda @DataX                                   ; get x position
+000438r 3  69 02            adc #$02                                     ; and add 2 + carry value
+00043Ar 3  85 03            sta @DataX                                   ; and store it back
+00043Cr 3  68               pla                                          ; then restore our original value
+00043Dr 3               @sock1:                                          ;
+00043Dr 3  85 04            sta @DataTemp                                ; store this in our temp value
+00043Fr 3  0A               asl a                                        ; multiply by 4
+000440r 3  0A               asl a                                        ;
+000441r 3  65 04            adc @DataTemp                                ; and add the temp value
+000443r 3  65 03            adc @DataX                                   ; then add our x position
+000445r 3  85 03            sta @DataX                                   ; and store it back
+000447r 3  60               rts                                          ;
+000448r 3               ; ===========================================================================
+000448r 3               
+000448r 2               .include "menu.asm"
+000448r 3               SettablesCount   = $4
+000448r 3               MenuTextPtr      = $C3
+000448r 3               MenuTextLen      = $C2
+000448r 3               
+000448r 3               .pushseg
+000448r 3               .segment "MENUWRAM"
+00000Ar 3  00           MenuSelectedItem: .byte $00
+00000Br 3  00           MenuSelectedSubitem: .byte $00
+00000Cr 3               Settables:
+00000Cr 3  00           SettablesWorld: .byte $00
+00000Dr 3  00           SettablesLevel: .byte $00
+00000Er 3  00           SettablesPUP:   .byte $00
+00000Fr 3  00           SettablesRule:  .byte $00
+000010r 3               .popseg
+000448r 3               
+000448r 3               ; names for each selection type
+000448r 3               MenuTitles:
+000448r 3  20 18 1B 15  .byte "WORLD   "
+00044Cr 3  0D 24 24 24  
+000450r 3  15 0E 1F 0E  .byte "LEVEL   "
+000454r 3  15 24 24 24  
+000458r 3  19 28 1E 19  .byte "P-UP    "
+00045Cr 3  24 24 24 24  
+000460r 3  1B 1E 15 0E  .byte "RULE    "
+000464r 3  24 24 24 24  
+000468r 3               
+000468r 3               ; ppu position to draw each title
+000468r 3               .define MenuTitleLocations \
+000468r 3                   $20CA + ($40 * 0), \
+000468r 3                   $20CA + ($40 * 1), \
+000468r 3                   $20CA + ($40 * 2), \
+000468r 3                   $20CA + ($40 * 3)
+000468r 3               
+000468r 3               ; ppu position to draw each value
+000468r 3               .define MenuValueLocations \
+000468r 3                   $20D3 + ($40 * 0) - 0, \
+000468r 3                   $20D3 + ($40 * 1) - 0, \
+000468r 3                   $20D3 + ($40 * 2) - 3, \
+000468r 3                   $20D3 + ($40 * 3) - 3
+000468r 3               
+000468r 3               ; which routines to use to change each menu items value
+000468r 3               UpdateSelectedValueJE:
+000468r 3  98               tya
+000469r 3  20 rr rr         jsr JumpEngine
+00046Cr 3  rr rr            .word UpdateValueWorldNumber ; world
+00046Er 3  rr rr            .word UpdateValueLevelNumber ; level
+000470r 3  rr rr            .word UpdateValuePUps        ; p-up
+000472r 3  rr rr            .word UpdateValueFramerule   ; framerule
+000474r 3               
+000474r 3               ; which routines to use to draw each menu items value
+000474r 3               DrawMenuValueJE:
+000474r 3  98               tya
+000475r 3  20 rr rr         jsr JumpEngine
+000478r 3  rr rr            .word DrawValueNumber        ; world
+00047Ar 3  rr rr            .word DrawValueNumber        ; level
+00047Cr 3  rr rr            .word DrawValueString_PUp    ; p-up
+00047Er 3  rr rr            .word DrawValueFramerule     ; framerule
+000480r 3               
+000480r 3               ; ===========================================================================
+000480r 3               ;  Redraw menu
+000480r 3               ; ---------------------------------------------------------------------------
+000480r 3               DrawMenu:
+000480r 3               MenuReset:
+000480r 3                   @Temp = $10
+000480r 3  A0 03            ldy #(SettablesCount-1)                  ; get number of menu items
+000482r 3  84 10        :   sty @Temp                                ; store the current menu item
+000484r 3  20 rr rr         jsr @DrawMenuTitle                       ; draw the title of the menu item
+000487r 3  A4 10            ldy @Temp                                ; restore the menu item
+000489r 3  20 rr rr         jsr DrawMenuValueJE                      ; draw the value of the menu item
+00048Cr 3  A4 10            ldy @Temp                                ; restore the menu item
+00048Er 3  88               dey                                      ; and decrement it
+00048Fr 3  10 F1            bpl :-                                   ; if not done, keep drawing
+000491r 3  60               rts                                      ; otherwise, exit
+000492r 3               @DrawMenuTitle:
+000492r 3  18               clc                                      ;
+000493r 3  AD 00 03         lda VRAM_Buffer1_Offset                  ; get current vram offset position
+000496r 3  AA               tax                                      ;
+000497r 3  69 08            adc #3+5                                 ; advance it based on how many bytes we will write
+000499r 3  8D 00 03         sta VRAM_Buffer1_Offset                  ; and save it back
+00049Cr 3  B9 rr rr         lda MenuTitleLocationsHi,y               ; set ppu location of the current item's title
+00049Fr 3  9D 01 03         sta VRAM_Buffer1+0,x                     ;
+0004A2r 3  B9 rr rr         lda MenuTitleLocationsLo,y               ;
+0004A5r 3  9D 02 03         sta VRAM_Buffer1+1,x                     ;
+0004A8r 3  A9 05            lda #5                                   ; store length of the title
+0004AAr 3  9D 03 03         sta VRAM_Buffer1+2,x                     ;
+0004ADr 3  98               tya                                      ; copy the menu item index to A
+0004AEr 3  2A               rol a                                    ; and multiply it by 8, the offsets of the title strings
+0004AFr 3  2A               rol a                                    ;
+0004B0r 3  2A               rol a                                    ;
+0004B1r 3  A8               tay                                      ; and copy that back to Y
+0004B2r 3  B9 rr rr         lda MenuTitles+0,y                       ; then write the title screen to the buffer
+0004B5r 3  9D 04 03         sta VRAM_Buffer1+3,x                     ;
+0004B8r 3  B9 rr rr         lda MenuTitles+1,y                       ;
+0004BBr 3  9D 05 03         sta VRAM_Buffer1+4,x                     ;
+0004BEr 3  B9 rr rr         lda MenuTitles+2,y                       ;
+0004C1r 3  9D 06 03         sta VRAM_Buffer1+5,x                     ;
+0004C4r 3  B9 rr rr         lda MenuTitles+3,y                       ;
+0004C7r 3  9D 07 03         sta VRAM_Buffer1+6,x                     ;
+0004CAr 3  B9 rr rr         lda MenuTitles+4,y                       ;
+0004CDr 3  9D 08 03         sta VRAM_Buffer1+7,x                     ;
+0004D0r 3  A9 00            lda #0                                   ; and end the buffer with null
+0004D2r 3  9D 09 03         sta VRAM_Buffer1+8,x                     ;
+0004D5r 3  60               rts                                      ;
+0004D6r 3               ; ===========================================================================
+0004D6r 3               
+0004D6r 3               ; ===========================================================================
+0004D6r 3               ;  Menu main loop
+0004D6r 3               ; ---------------------------------------------------------------------------
+0004D6r 3               MenuNMI:
+0004D6r 3  20 rr rr         jsr DrawSelectionMarkers                 ; reposition the selection markers
+0004D9r 3  18               clc                                      ;
+0004DAr 3  AD rr rr         lda PressedButtons                       ; check current inputs
+0004DDr 3  D0 01            bne @READINPUT                           ; if any buttons are held, check them
+0004DFr 3  60               rts                                      ; otherwise there's nothing to do
+0004E0r 3               @READINPUT:                                  ;
+0004E0r 3  29 0F            and #Right_Dir|Left_Dir|Down_Dir|Up_Dir  ; are we holding a direction?
+0004E2r 3  F0 09            beq @SELECT                              ; if not, check for select
+0004E4r 3  AC rr rr         ldy MenuSelectedItem                     ; we are, get the current selected item
+0004E7r 3  20 rr rr         jsr UpdateSelectedValueJE                ; update the value
+0004EAr 3  4C rr rr         jmp @RenderMenu                          ; redraw the menu and exit
+0004EDr 3               @SELECT:                                     ;
+0004EDr 3  AD rr rr         lda PressedButtons                       ; check current inputs
+0004F0r 3  C9 20            cmp #Select_Button                       ; are we holding select?
+0004F2r 3  D0 13            bne @START                               ; if not, check for start
+0004F4r 3  A2 00            ldx #0                                   ; we are changing selected menu item
+0004F6r 3  8E rr rr         stx MenuSelectedSubitem                  ; clear selected subitem
+0004F9r 3  EE rr rr         inc MenuSelectedItem                     ; and advance to the next item
+0004FCr 3  AD rr rr         lda MenuSelectedItem                     ; then check if we've reached the final item
+0004FFr 3  C9 04            cmp #SettablesCount                      ;
+000501r 3  D0 03            bne :+                                   ; no - skip ahead
+000503r 3  8E rr rr         stx MenuSelectedItem                     ; yes - clear the selected item
+000506r 3  60           :   rts                                      ; and exit
+000507r 3               @START:                                      ;
+000507r 3  C9 10            cmp #Start_Button                        ; are we holding start?
+000509r 3  D0 17            bne @DONE                                ; no - nothing to do, exit
+00050Br 3  A9 00            lda #0                                   ; yes - check held buttons
+00050Dr 3  AE rr rr         ldx HeldButtons                          ;
+000510r 3  E0 80            cpx #A_Button                            ; check if we're holding A
+000512r 3  90 02            bcc :+                                   ; nope - skip ahead
+000514r 3  A9 01            lda #1                                   ; yes - set hard mode flag
+000516r 3  8D 6A 07     :   sta PrimaryHardMode                      ; save hard mode flag
+000519r 3  4C rr rr         jmp TStartGame                           ; and start the game
+00051Cr 3               @RenderMenu:                                 ;
+00051Cr 3  AC rr rr         ldy MenuSelectedItem                     ; get the current selected item
+00051Fr 3  20 rr rr         jsr DrawMenu                             ; and redraw it
+000522r 3               @DONE:                                       ;
+000522r 3  60               rts                                      ; done
+000523r 3               ; ===========================================================================
+000523r 3               
+000523r 3               
+000523r 3               ; ===========================================================================
+000523r 3               ;  Position the "cursors" of the menu at the correct location
+000523r 3               ; ---------------------------------------------------------------------------
+000523r 3               DrawSelectionMarkers:
+000523r 3  A9 00            lda #$00                                 ; set palette attributes for sprites
+000525r 3  8D 06 02         sta Sprite_Attributes + (1 * SpriteLen)  ;
+000528r 3  A9 21            lda #$21                                 ;
+00052Ar 3  8D 0A 02         sta Sprite_Attributes + (2 * SpriteLen)  ;
+00052Dr 3  A9 2E            lda #$2E                                 ; main coin sprite for sprite 1
+00052Fr 3  8D 05 02         sta Sprite_Tilenumber + (1 * SpriteLen)  ;
+000532r 3  A9 27            lda #$27                                 ; set solid background for sprite 2
+000534r 3  8D 09 02         sta Sprite_Tilenumber + (2 * SpriteLen)  ;
+000537r 3  A9 1E            lda #$1E                                 ; get initial Y position
+000539r 3  AC rr rr         ldy MenuSelectedItem                     ; get current menu item
+00053Cr 3  18           :   clc                                      ;
+00053Dr 3  69 10            adc #$10                                 ; add 16px per menu item
+00053Fr 3  88               dey                                      ; decrement loop value
+000540r 3  10 FA            bpl :-                                   ; and loop until done
+000542r 3  8D 04 02         sta Sprite_Y_Position + (1 * SpriteLen)  ; reposition sprite 1 (floating coin)
+000545r 3  8D 08 02         sta Sprite_Y_Position + (2 * SpriteLen)  ; reposition sprite 2 (background color)
+000548r 3  A9 A9            lda #$A9                                 ; get initial X position
+00054Ar 3  8D 07 02         sta Sprite_X_Position + (1 * SpriteLen)  ; reposition sprite 1 (floating coin)
+00054Dr 3  E9 08            sbc #$8                                  ; offset by 8px for the background color
+00054Fr 3  AC rr rr         ldy MenuSelectedSubitem                  ; get which subitem is selected
+000552r 3  38           :   sec                                      ; then offset by another 8px per subitem
+000553r 3  E9 08            sbc #$8                                  ;
+000555r 3  88               dey                                      ; decrement loop value
+000556r 3  10 FA            bpl :-                                   ; and loop until done
+000558r 3  8D 0B 02         sta Sprite_X_Position + (2 * SpriteLen)  ; reposition sprite 2 (background color)
+00055Br 3  60               rts                                      ; done
+00055Cr 3               ; ===========================================================================
+00055Cr 3               
+00055Cr 3               ; update selected world value
+00055Cr 3               UpdateValueWorldNumber:
+00055Cr 3  AE rr rr         ldx WorldCount         ; get number of worlds
+00055Fr 3  AD rr rr         lda HeldButtons        ; check held buttons
+000562r 3  29 40            and #B_Button          ; are we holding B?
+000564r 3  F0 02            beq :+                 ; no - skip ahead
+000566r 3  A2 FF            ldx #$FF               ; otherwise allow selecting any value
+000568r 3  4C rr rr     :   jmp UpdateValueShared  ; update selected menu item
+00056Br 3               
+00056Br 3               ; update selected level value
+00056Br 3               UpdateValueLevelNumber:
+00056Br 3  AE rr rr         ldx LevelCount         ; get number of levels per world
+00056Er 3  AD rr rr         lda HeldButtons        ; check held buttons
+000571r 3  29 40            and #B_Button          ; are we holding B?
+000573r 3  F0 02            beq :+                 ; no - skip ahead
+000575r 3  A2 FF            ldx #$FF               ; otherwise allow selecting any value
+000577r 3  4C rr rr     :   jmp UpdateValueShared  ; update selected menu item
+00057Ar 3               
+00057Ar 3               ; update selected powerup value
+00057Ar 3               UpdateValuePUps:
+00057Ar 3  A2 06            ldx #6                 ; there are 6 total states
+00057Cr 3  4C rr rr         jmp UpdateValueShared  ; update selected menu item
+00057Fr 3               
+00057Fr 3               ; ===========================================================================
+00057Fr 3               ; Update a single byte menu item
+00057Fr 3               ; ---------------------------------------------------------------------------
+00057Fr 3               ; Input:  Y   = menu item index
+00057Fr 3               ;         X   = maximum allowed value
+00057Fr 3               ; ---------------------------------------------------------------------------
+00057Fr 3               UpdateValueShared:
+00057Fr 3                   @Max = $0
+00057Fr 3  86 00            stx @Max                          ; temp store max value
+000581r 3  18               clc                               ;
+000582r 3  AD rr rr         lda PressedButtons                ; get current inputs
+000585r 3  29 06            and #Down_Dir|Left_Dir            ; check if we're pressing decrementing direction
+000587r 3  D0 0D            bne @Decrement                    ; yes - skip ahead to decrement
+000589r 3               @Increment:                           ; no - we are incrementing
+000589r 3  B9 rr rr         lda Settables,y                   ; get current value of the menu item
+00058Cr 3  69 01            adc #1                            ; increment it
+00058Er 3  C5 00            cmp @Max                          ; check if we're beyond the maximum value
+000590r 3  90 13            bcc @Store                        ; no - skip ahead to store
+000592r 3  A9 00            lda #0                            ; yes - set to 0
+000594r 3  F0 0F            beq @Store                        ; and store
+000596r 3               @Decrement:                           ;
+000596r 3  B9 rr rr         lda Settables,y                   ; get current value of the menu item
+000599r 3  F0 05            beq @Wrap                         ; if it's 0, wrap around
+00059Br 3  38               sec                               ;
+00059Cr 3  E9 01            sbc #1                            ; otherwise, decrement it
+00059Er 3  50 05            bvc @Store                        ; skip ahead to store
+0005A0r 3               @Wrap:                                ;
+0005A0r 3  A5 00            lda @Max                          ; wrap around to the maximum value + 1
+0005A2r 3  38               sec                               ; and decrement it by 1
+0005A3r 3  E9 01            sbc #1                            ;
+0005A5r 3               @Store:                               ;
+0005A5r 3  99 rr rr         sta Settables,y                   ; store the new value
+0005A8r 3  60               rts                               ;
+0005A9r 3               ; ===========================================================================
+0005A9r 3               
+0005A9r 3               ; ===========================================================================
+0005A9r 3               ; Modify the selected framerule
+0005A9r 3               ; ---------------------------------------------------------------------------
+0005A9r 3               UpdateValueFramerule:
+0005A9r 3  18               clc                               ;
+0005AAr 3  AE rr rr         ldx MenuSelectedSubitem           ; get selected digit offset
+0005ADr 3  AD rr rr         lda PressedButtons                ; check inputs
+0005B0r 3  29 03            and #Right_Dir|Left_Dir           ; are we pressing left/right
+0005B2r 3  F0 11            beq @update_value                 ; no - skip to check if we're changing value
+0005B4r 3  CA               dex                               ; yes - we are changing which digit is selected
+0005B5r 3  AD rr rr         lda PressedButtons                ; get buttons again
+0005B8r 3  C9 01            cmp #Right_Dir                    ; are we pressing right?
+0005BAr 3  F0 02            beq @store_selected               ; yes - store X as new selected digit
+0005BCr 3  E8               inx                               ; no - we are pressing left, increment twice to offset dex
+0005BDr 3  E8               inx                               ;
+0005BEr 3               @store_selected:                      ;
+0005BEr 3  8A               txa                               ;
+0005BFr 3  29 03            and #%11                          ; mask to valid framerule value
+0005C1r 3  8D rr rr         sta MenuSelectedSubitem           ; and update selected digit
+0005C4r 3  60               rts                               ; done - exit
+0005C5r 3               @update_value:
+0005C5r 3  BC rr rr         ldy MathFrameruleDigitStart,x     ; get the digit we're changing
+0005C8r 3  AD rr rr         lda PressedButtons                ; and check inputs
+0005CBr 3  C9 08            cmp #Up_Dir                       ; are we pressing up?
+0005CDr 3  F0 07            beq @increase                     ; yes - increment digit
+0005CFr 3  88               dey                               ; no - decrement digit
+0005D0r 3  10 0B            bpl @store_value                  ; if we didn't underflow, store value
+0005D2r 3  A0 09            ldy #9                            ; otherwise wrap back around to 9
+0005D4r 3  D0 07            bne @store_value                  ; and store value
+0005D6r 3               @increase:
+0005D6r 3  C8               iny                               ; we're increment, so, increment Y
+0005D7r 3  C0 0A            cpy #$A                           ; check if we overflowed
+0005D9r 3  D0 02            bne @store_value                  ; no - store value
+0005DBr 3  A0 00            ldy #0                            ; yes - wrap back around to 0
+0005DDr 3               @store_value:
+0005DDr 3  98               tya                               ;
+0005DEr 3  9D rr rr         sta MathFrameruleDigitStart,x     ; and save the new digit
+0005E1r 3  60               rts                               ; exit!
+0005E2r 3               ; ===========================================================================
+0005E2r 3               
+0005E2r 3               ; ===========================================================================
+0005E2r 3               ; Draws a menu item to screen
+0005E2r 3               ; ---------------------------------------------------------------------------
+0005E2r 3               DrawValueNumber:
+0005E2r 3  18               clc                               ;
+0005E3r 3  AD 00 03         lda VRAM_Buffer1_Offset           ; get current vram update offset
+0005E6r 3  AA               tax                               ;
+0005E7r 3  69 04            adc #4                            ; offset it based on how much we're writing
+0005E9r 3  8D 00 03         sta VRAM_Buffer1_Offset           ; and store it back
+0005ECr 3  B9 rr rr         lda MenuValueLocationsHi,y        ; get the ppu location of this menu item, and write to vram buffer
+0005EFr 3  9D 01 03         sta VRAM_Buffer1+0,x              ;
+0005F2r 3  B9 rr rr         lda MenuValueLocationsLo,y        ;
+0005F5r 3  9D 02 03         sta VRAM_Buffer1+1,x              ;
+0005F8r 3  A9 01            lda #1                            ; we're writing 1 number
+0005FAr 3  9D 03 03         sta VRAM_Buffer1+2,x              ;
+0005FDr 3  B9 rr rr         lda Settables,y                   ; get the value of the settable item
+000600r 3  69 01            adc #1                            ; and increment it, since we display 1-based numbers
+000602r 3  9D 04 03         sta VRAM_Buffer1+3,x              ; store the number to be drawn
+000605r 3  A9 00            lda #0                            ; and mark the end of the buffer
+000607r 3  9D 05 03         sta VRAM_Buffer1+4,x              ;
+00060Ar 3  60               rts                               ;
+00060Br 3               ; ===========================================================================
+00060Br 3               
+00060Br 3               ; ===========================================================================
+00060Br 3               ; Draws the four digit framerule to screen
+00060Br 3               ; ---------------------------------------------------------------------------
+00060Br 3               DrawValueFramerule:
+00060Br 3  18               clc                               ;
+00060Cr 3  AD 00 03         lda VRAM_Buffer1_Offset           ; get current vram update offset
+00060Fr 3  AA               tax                               ;
+000610r 3  69 07            adc #7                            ; offset it based on how much we're writing
+000612r 3  8D 00 03         sta VRAM_Buffer1_Offset           ; and store it back
+000615r 3  B9 rr rr         lda MenuValueLocationsHi, y       ; get the ppu location of this menu item, and write to vram buffer
+000618r 3  9D 01 03         sta VRAM_Buffer1+0, x             ;
+00061Br 3  B9 rr rr         lda MenuValueLocationsLo, y       ;
+00061Er 3  9D 02 03         sta VRAM_Buffer1+1, x             ;
+000621r 3  A9 04            lda #4                            ; we're writing 4 numbers
+000623r 3  9D 03 03         sta VRAM_Buffer1+2, x             ;
+000626r 3  AD rr rr         lda MathFrameruleDigitStart+0     ; copy each of the four digits to vram buffer
+000629r 3  9D 07 03         sta VRAM_Buffer1+3+3, x           ;
+00062Cr 3  AD rr rr         lda MathFrameruleDigitStart+1     ;
+00062Fr 3  9D 06 03         sta VRAM_Buffer1+3+2, x           ;
+000632r 3  AD rr rr         lda MathFrameruleDigitStart+2     ;
+000635r 3  9D 05 03         sta VRAM_Buffer1+3+1, x           ;
+000638r 3  AD rr rr         lda MathFrameruleDigitStart+3     ;
+00063Br 3  9D 04 03         sta VRAM_Buffer1+3+0, x           ;
+00063Er 3  A9 00            lda #0                            ; and mark the end of the buffer
+000640r 3  9D 08 03         sta VRAM_Buffer1+3+4, x           ;
+000643r 3  60               rts                               ;
+000644r 3               ; ===========================================================================
+000644r 3               
+000644r 3               ; ===========================================================================
+000644r 3               ; Draws a string from a pointer to screen
+000644r 3               ; ---------------------------------------------------------------------------
+000644r 3               DrawValueString:
+000644r 3  18               clc                               ;
+000645r 3  AD 00 03         lda VRAM_Buffer1_Offset           ; get current vram update offset
+000648r 3  AA               tax                               ;
+000649r 3  65 C2            adc MenuTextLen                   ; offset it based on string length
+00064Br 3  69 03            adc #3                            ; and add 3 for the header
+00064Dr 3  8D 00 03         sta VRAM_Buffer1_Offset           ; and store it back
+000650r 3  B9 rr rr         lda MenuValueLocationsHi,y        ; get the ppu location of this menu item, and write to vram buffer
+000653r 3  9D 01 03         sta VRAM_Buffer1+0,x              ;
+000656r 3  B9 rr rr         lda MenuValueLocationsLo,y        ;
+000659r 3  9D 02 03         sta VRAM_Buffer1+1,x              ;
+00065Cr 3  A5 C2            lda MenuTextLen                   ; write the string length to vram buffer
+00065Er 3  9D 03 03         sta VRAM_Buffer1+2,x              ;
+000661r 3  A0 00            ldy #0                            ; prepare iterator
+000663r 3               @CopyNext:                            ;
+000663r 3  B1 C3            lda (MenuTextPtr),y               ; copy a byte of the string to vram
+000665r 3  9D 04 03         sta VRAM_Buffer1+3,x              ;
+000668r 3  E8               inx                               ; increment vram offset
+000669r 3  C8               iny                               ; increment string read offset
+00066Ar 3  C4 C2            cpy MenuTextLen                   ; check if we're done
+00066Cr 3  90 F5            bcc @CopyNext                     ; no - copy next byte
+00066Er 3  A9 00            lda #0                            ; and mark the end of the buffer
+000670r 3  9D 05 03         sta VRAM_Buffer1+4, x             ;
+000673r 3  60               rts                               ;
+000674r 3               ; ===========================================================================
+000674r 3               
+000674r 3               ; ===========================================================================
+000674r 3               ; Draws a powerup state to screen
+000674r 3               ; ---------------------------------------------------------------------------
+000674r 3               DrawValueString_PUp:
+000674r 3  B9 rr rr         lda Settables,y                   ; get the selected powerup state
+000677r 3  0A               asl a                             ; get offset into pointer table
+000678r 3  AA               tax                               ;
+000679r 3  BD rr rr         lda @Strings,x                    ; copy string pointer to menu text pointer
+00067Cr 3  85 C3            sta MenuTextPtr                   ;
+00067Er 3  BD rr rr         lda @Strings+1,x                  ;
+000681r 3  85 C4            sta MenuTextPtr+1                 ;
+000683r 3  A9 05            lda #5                            ; set fixed string length
+000685r 3  85 C2            sta MenuTextLen                   ;
+000687r 3  4C rr rr         jmp DrawValueString               ; and draw the string
+00068Ar 3               
+00068Ar 3               @Strings:
+00068Ar 3  rr rr        .word @Str0
+00068Cr 3  rr rr        .word @Str1
+00068Er 3  rr rr        .word @Str2
+000690r 3  rr rr        .word @Str3
+000692r 3  rr rr        .word @Str4
+000694r 3  rr rr        .word @Str5
+000696r 3               
+000696r 3  17 18 17 0E  @Str0: .byte "NONE "
+00069Ar 3  24           
+00069Br 3  24 0B 12 10  @Str1: .byte " BIG "
+00069Fr 3  24           
+0006A0r 3  0F 12 1B 0E  @Str2: .byte "FIRE "
+0006A4r 3  24           
+0006A5r 3  17 18 17 0E  @Str3: .byte "NONE!"
+0006A9r 3  2B           
+0006AAr 3  24 0B 12 10  @Str4: .byte " BIG!"
+0006AEr 3  2B           
+0006AFr 3  0F 12 1B 0E  @Str5: .byte "FIRE!"
+0006B3r 3  2B           
+0006B4r 3               ; ===========================================================================
+0006B4r 3               
+0006B4r 3               ; pointers to menu values
+0006B4r 3  D3 13 50 90  MenuValueLocationsLo: .lobytes MenuValueLocations
+0006B8r 3  20 21 21 21  MenuValueLocationsHi: .hibytes MenuValueLocations
+0006BCr 3  CA 0A 4A 8A  MenuTitleLocationsLo: .lobytes MenuTitleLocations
+0006C0r 3  20 21 21 21  MenuTitleLocationsHi: .hibytes MenuTitleLocations
+0006C4r 3               
+0006C4r 2               .include "utils.asm"
+0006C4r 3               
+0006C4r 3               ; ===========================================================================
+0006C4r 3               ;  Base 10 addition
+0006C4r 3               ; ---------------------------------------------------------------------------
+0006C4r 3               ; Input:
+0006C4r 3               ;   X - offset into base10 value list to add
+0006C4r 3               ;   A - value to add
+0006C4r 3               ; ---------------------------------------------------------------------------
+0006C4r 3               B10Add:
+0006C4r 3  18               clc                        ;
+0006C5r 3  7D rr rr         adc MathDigits,x           ; add value to digit
+0006C8r 3  9D rr rr         sta MathDigits,x           ; store result
+0006CBr 3  C9 0A        :   cmp #10                    ; compare against 10
+0006CDr 3  90 12            bcc @Done                  ; if less than 10, we're done
+0006CFr 3  A9 00            lda #0                     ; otherwise, set to 0
+0006D1r 3  9D rr rr         sta MathDigits,x           ; store result
+0006D4r 3  E8               inx                        ; move to next digit
+0006D5r 3  30 0A            bmi @Done                  ; if no more digits, we're done
+0006D7r 3  BD rr rr         lda MathDigits,x           ; get next digit
+0006DAr 3  69 00            adc #0                     ; add our carry
+0006DCr 3  9D rr rr         sta MathDigits,x           ; store result
+0006DFr 3  90 EA            bcc :-                     ; and keep going until we don't have a carry
+0006E1r 3               @Done:                         ;
+0006E1r 3  60               rts                        ;
+0006E2r 3               ; ===========================================================================
+0006E2r 3               
+0006E2r 3               ; ===========================================================================
+0006E2r 3               ;  Divide A value by 10
+0006E2r 3               ; ---------------------------------------------------------------------------
+0006E2r 3               ;  Example:
+0006E2r 3               ;  lda #145
+0006E2r 3               ;  jsr B10DivideBy10
+0006E2r 3               ;  ; A = 5   (remainder)
+0006E2r 3               ;  ; X = 14  (quotient)
+0006E2r 3               ; ---------------------------------------------------------------------------
+0006E2r 3               B10DivBy10:
+0006E2r 3  A2 00            ldx #$00                  ; clear result
+0006E4r 3  C9 0A        :   cmp #$0a                  ; compare current value against 10
+0006E6r 3  90 05            bcc @Done                 ; if lower, then we are finished
+0006E8r 3  E9 0A            sbc #$0a                  ; otherwise subtract 10
+0006EAr 3  E8               inx                       ; and increment result
+0006EBr 3  D0 F7            bne :-                    ; keep looping
+0006EDr 3               @Done:                        ;
+0006EDr 3  60               rts                       ; done
+0006EEr 3               ; ===========================================================================
+0006EEr 3               
+0006EEr 3               ; ================================================================
+0006EEr 3               ;  6502 multiply by 10
+0006EEr 3               ; ----------------------------------------------------------------
+0006EEr 3               MultiplyBy10:
+0006EEr 3  0A               asl                       ; multiply by 2
+0006EFr 3  85 00            sta $0                    ; store in temp value
+0006F1r 3  0A               asl                       ; multiply by 4
+0006F2r 3  0A               asl                       ;
+0006F3r 3  18               clc                       ;
+0006F4r 3  65 00            adc $0                    ; add temp value, so, (A*2*4)+(A*2)
+0006F6r 3  60               rts                       ; done
+0006F7r 3               ; ================================================================
+0006F7r 3               
+0006F7r 3               ;; copied code from smb1
+0006F7r 3               WriteVRAMBufferToScreen:
+0006F7r 3  AD 00 03         lda VRAM_Buffer1_Offset
+0006FAr 3  F0 2F            beq @Skip
+0006FCr 3  A0 03            ldy #>(VRAM_Buffer1)
+0006FEr 3  84 01            sty $1
+000700r 3  A0 01            ldy #<(VRAM_Buffer1)
+000702r 3  84 00            sty $0
+000704r 3  A0 00            ldy #0
+000706r 3               @KeepWriting:
+000706r 3  20 rr rr         jsr WriteBufferPtrToScreen
+000709r 3  B1 00            lda ($0),y
+00070Br 3  F0 10            beq @Done
+00070Dr 3  18               clc
+00070Er 3  98               tya
+00070Fr 3  65 00            adc $0
+000711r 3  85 00            sta $0
+000713r 3  A5 01            lda $1
+000715r 3  69 00            adc #$0
+000717r 3  85 01            sta $1
+000719r 3  A0 00            ldy #0
+00071Br 3  50 E9            bvc @KeepWriting
+00071Dr 3               @Done:
+00071Dr 3  A9 00            lda #0
+00071Fr 3  8D 01 03         sta VRAM_Buffer1
+000722r 3  8D 00 03         sta VRAM_Buffer1_Offset
+000725r 3  8D 05 20         sta PPU_SCROLL_REG
+000728r 3  8D 05 20         sta PPU_SCROLL_REG
+00072Br 3               @Skip:
+00072Br 3  60               rts
+00072Cr 3               
+00072Cr 3               WriteBufferPtrToScreen:
+00072Cr 3  B1 00            lda ($0),y
+00072Er 3  C9 1F            cmp #$1F
+000730r 3  90 19            bcc @Done
+000732r 3  8D 06 20         sta PPU_ADDRESS
+000735r 3  C8               iny
+000736r 3  B1 00            lda ($0),y
+000738r 3  8D 06 20         sta PPU_ADDRESS
+00073Br 3  C8               iny
+00073Cr 3  B1 00            lda ($0),y
+00073Er 3  AA               tax
+00073Fr 3  F0 0A            beq @Done
+000741r 3               @Continue:
+000741r 3  C8               iny
+000742r 3  B1 00            lda ($0),y
+000744r 3  8D 07 20         sta PPU_DATA
+000747r 3  CA               dex
+000748r 3  D0 F7            bne @Continue
+00074Ar 3  C8               iny
+00074Br 3               @Done:
+00074Br 3  60               rts
+00074Cr 3               
+00074Cr 3               ReadJoypadsCurrent:
+00074Cr 3  A9 01            lda #$01
+00074Er 3  8D 16 40         sta JOYPAD_PORT
+000751r 3  8D rr rr         sta HeldButtons
+000754r 3  4A               lsr a
+000755r 3  8D 16 40         sta JOYPAD_PORT
+000758r 3               @KeepReading:
+000758r 3  AD 16 40         lda JOYPAD_PORT
+00075Br 3  4A               lsr a
+00075Cr 3  2E rr rr         rol HeldButtons
+00075Fr 3  90 F7            bcc @KeepReading
+000761r 3  60               rts
+000762r 3               
+000762r 3               ReadJoypads:
+000762r 3  20 rr rr         jsr ReadJoypadsCurrent
+000765r 3  AD rr rr         lda HeldButtons
+000768r 3  49 FF            eor #%11111111
+00076Ar 3  2D rr rr         and LastReadButtons
+00076Dr 3  8D rr rr         sta ReleasedButtons
+000770r 3  AD rr rr         lda LastReadButtons
+000773r 3  49 FF            eor #%11111111
+000775r 3  2D rr rr         and HeldButtons
+000778r 3  8D rr rr         sta PressedButtons
+00077Br 3  AD rr rr         lda HeldButtons
+00077Er 3  8D rr rr         sta LastReadButtons
+000781r 3  60               rts
+000782r 3               
+000782r 3               JumpEngine:
+000782r 3  84 00            sty $00
+000784r 3  0A               asl          ;shift bit from contents of A
+000785r 3  A8               tay
+000786r 3  68               pla          ;pull saved return address from stack
+000787r 3  85 04            sta $04      ;save to indirect
+000789r 3  68               pla
+00078Ar 3  85 05            sta $05
+00078Cr 3  C8               iny
+00078Dr 3  B1 04            lda ($04),y  ;load pointer from indirect
+00078Fr 3  85 06            sta $06      ;note that if an RTS is performed in next routine
+000791r 3  C8               iny          ;it will return to the execution before the sub
+000792r 3  B1 04            lda ($04),y  ;that called this routine
+000794r 3  85 07            sta $07
+000796r 3  88               dey
+000797r 3  88               dey
+000798r 3  98               tya
+000799r 3  A4 00            ldy $00
+00079Br 3  6C 06 00         jmp ($06)    ;jump to the address we loaded
+00079Er 3               
+00079Er 3               
+00079Er 2               .include "background.asm"
+00079Er 3               BGDATA:
+00079Er 3  24 24 24 24  .incbin "../scripts/graphics/menu.bin"
+0007A2r 3  24 24 24 24  
+0007A6r 3  24 24 24 24  
+000B5Er 3               
+000B5Er 3               ; attributes
+000B5Er 3  FF FF FF FF  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+000B62r 3  FF FF FF FF  
+000B66r 3  FF FF FF FF  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+000B6Ar 3  FF FF FF FF  
+000B6Er 3  FF FF FF FF  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+000B72r 3  FF FF FF FF  
+000B76r 3  FF FF FF FF  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+000B7Ar 3  FF FF FF FF  
+000B7Er 3  FF FF FF FF  .byte $FF, $FF, $FF, $FF, $FF, $00, $00, $00
+000B82r 3  FF 00 00 00  
+000B86r 3  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+000B8Ar 3  00 00 00 00  
+000B8Er 3  00 00 00 05  .byte $00, $00, $00, $05, $05, $05, $00, $00
+000B92r 3  05 05 00 00  
+000B96r 3  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+000B9Ar 3  00 00 00 00  
+000B9Er 3               
+000B9Er 3               MenuPalette:
+000B9Er 3  0F 30 10 00  .byte $0F, $30, $10, $00
+000BA2r 3  0F 11 01 02  .byte $0F, $11, $01, $02
+000BA6r 3  0F 30 10 00  .byte $0F, $30, $10, $00
+000BAAr 3  0F 30 2D 30  .byte $0F, $30, $2D, $30
+000BAEr 3               
+000BAEr 3  0F 30 11 01  .byte $0F, $30, $11, $01
+000BB2r 3  0F 11 11 11  .byte $0F, $11, $11, $11
+000BB6r 3  0F 0F 10 0F  .byte $0F, $0F, $10, $0F
+000BBAr 3  0F 0F 10 0F  .byte $0F, $0F, $10, $0F
+000BBEr 3               MenuPaletteEnd:
+000BBEr 3               
+000BBEr 2               .include "bankswitching.asm"
+000BBEr 3               .import __PRACTISE_WRAMCODE_LOAD__, __PRACTISE_WRAMCODE_RUN__, __PRACTISE_WRAMCODE_SIZE__
+000BBEr 3               
+000BBEr 3               
+000BBEr 3               ; ===========================================================================
+000BBEr 3               ;  Copy bankswitching code to WRAM
+000BBEr 3               ; ---------------------------------------------------------------------------
+000BBEr 3               InitBankSwitchingCode:
+000BBEr 3  A2 00            ldx #0                                    ; init X
+000BC0r 3  BD rr rr     :   lda __PRACTISE_WRAMCODE_LOAD__,x          ; load byte from ROM
+000BC3r 3  9D rr rr         sta __PRACTISE_WRAMCODE_RUN__,x           ; and copy to WRAM
+000BC6r 3  BD rr rr         lda __PRACTISE_WRAMCODE_LOAD__+$100,x     ; load byte from ROM
+000BC9r 3  9D rr rr         sta __PRACTISE_WRAMCODE_RUN__+$100,x      ; and copy to WRAM
+000BCCr 3  E8               inx                                       ; increment to copy full page
+000BCDr 3  D0 F1            bne :-                                    ;
+000BCFr 3  60               rts                                       ;
+000BD0r 3               ; ===========================================================================
+000BD0r 3               
+000BD0r 3               ; this code is copied into WRAM and used to jump between banks
+000BD0r 3               .pushseg
+000BD0r 3               .segment "PRACTISE_WRAMCODE"
+000000r 3               ; export symbols so that we can call them from smb1 and title screen as needed
+000000r 3               .export BANK_PractiseNMI
+000000r 3               .export BANK_PractiseReset
+000000r 3               .export BANK_PractiseWriteBottomStatusLine
+000000r 3               .export BANK_PractiseWriteTopStatusLine
+000000r 3               .export BANK_PractisePrintScore
+000000r 3               .export BANK_PractiseEnterStage
+000000r 3               
+000000r 3               ; these values can get replaced during patching
+000000r 3  08           WorldCount: .byte 8
+000001r 3  04           LevelCount: .byte 4
+000002r 3  4C rr rr     RELOCATE_GetAreaDataAddrs: jmp GetAreaDataAddrs
+000005r 3  4C rr rr     RELOCATE_LoadAreaPointer: jmp LoadAreaPointer
+000008r 3  4C rr rr     RELOCATE_PlayerEndWorld: jmp PlayerEndWorld
+00000Br 3  4C rr rr     RELOCATE_NonMaskableInterrupt: jmp NonMaskableInterrupt
+00000Er 3  4C rr rr     RELOCATE_GL_ENTER: jmp GL_ENTER
+000011r 3               
+000011r 3               ; wrappers around some title screen routines to be called from the game
+000011r 3               BANK_PractiseNMI:
+000011r 3  20 rr rr     jsr BANK_TITLE_RTS
+000014r 3  20 rr rr     jsr PractiseNMI
+000017r 3  4C rr rr     jmp BANK_GAME_RTS
+00001Ar 3               
+00001Ar 3               BANK_PractiseReset:
+00001Ar 3  20 rr rr     jsr BANK_TITLE_RTS
+00001Dr 3  4C rr rr     jmp HotReset
+000020r 3               
+000020r 3               BANK_PractiseWriteBottomStatusLine:
+000020r 3  20 rr rr     jsr BANK_TITLE_RTS
+000023r 3  20 rr rr     jsr PractiseWriteBottomStatusLine
+000026r 3  4C rr rr     jmp BANK_GAME_RTS
+000029r 3               
+000029r 3               BANK_PractiseWriteTopStatusLine:
+000029r 3  20 rr rr     jsr BANK_TITLE_RTS
+00002Cr 3  20 rr rr     jsr PractiseWriteTopStatusLine
+00002Fr 3  4C rr rr     jmp BANK_GAME_RTS
+000032r 3               
+000032r 3               BANK_PractisePrintScore:
+000032r 3  20 rr rr     jsr BANK_TITLE_RTS
+000035r 3  20 rr rr     jsr RedrawLowFreqStatusbar
+000038r 3  4C rr rr     jmp BANK_GAME_RTS
+00003Br 3               
+00003Br 3               BANK_PractiseEnterStage:
+00003Br 3  20 rr rr     jsr BANK_TITLE_RTS
+00003Er 3  20 rr rr     jsr PractiseEnterStage
+000041r 3  4C rr rr     jmp BANK_GAME_RTS
+000044r 3  60           rts
+000045r 3               
+000045r 3               ; ===========================================================================
+000045r 3               ;  Attempt to find the level selected on th emenu screen
+000045r 3               ; ---------------------------------------------------------------------------
+000045r 3               BANK_AdvanceToLevel:
+000045r 3                   @AreaNumber = $0
+000045r 3  20 rr rr         jsr BANK_GAME_RTS                   ; load game bank
+000048r 3  A2 00            ldx #0                              ;
+00004Ar 3  86 00            stx @AreaNumber                     ; clear temp area number
+00004Cr 3  8E 60 07         stx AreaNumber                      ; clear area number
+00004Fr 3  AE 5C 07         ldx LevelNumber                     ; get how many levels to advance
+000052r 3  F0 1A            beq @LevelFound                     ; if we're on the first level, we're done
+000054r 3               @NextArea:                              ;
+000054r 3  20 rr rr         jsr RELOCATE_LoadAreaPointer        ; otherwise, load the area pointer
+000057r 3  20 rr rr         jsr BANK_LEVELBANK_RTS              ; and switch to the level bank if needed
+00005Ar 3  20 rr rr         jsr RELOCATE_GetAreaDataAddrs       ; then get the pointer to the area data
+00005Dr 3  EE 60 07         inc AreaNumber                      ; advance area pointer
+000060r 3  AD 10 07         lda PlayerEntranceCtrl              ; get what kind of entry this level has
+000063r 3  29 04            and #%00000100                      ; check if it's a controllable area
+000065r 3  F0 04            beq @AreaOK                         ; yes - advance to next level
+000067r 3  E6 00            inc @AreaNumber                     ; yes - increment temp area number
+000069r 3  50 E9            bvc @NextArea                       ; and check next area
+00006Br 3               @AreaOK:                                ;
+00006Br 3  CA               dex                                 ; decrement number of levels we need to advance
+00006Cr 3  D0 E6            bne @NextArea                       ; and keep running if we haven't reached our level
+00006Er 3               @LevelFound:                            ;
+00006Er 3  18               clc                                 ;
+00006Fr 3  AD 5C 07         lda LevelNumber                     ; get level we are starting on
+000072r 3  65 00            adc @AreaNumber                     ; and add how many areas we needed to skip
+000074r 3  8D 60 07         sta AreaNumber                      ; and store that as the area number
+000077r 3  A9 00            lda #0                              ; clear sound
+000079r 3  8D 11 40         sta SND_DELTA_REG+1                 ;
+00007Cr 3  20 rr rr         jsr RELOCATE_LoadAreaPointer        ; reload pointers for this area
+00007Fr 3  20 rr rr         jsr RELOCATE_GetAreaDataAddrs       ;
+000082r 3  A9 A5            lda #$a5                            ;
+000084r 3  4C rr rr         jmp RELOCATE_GL_ENTER               ; then start the game
+000087r 3               ; ===========================================================================
+000087r 3               
+000087r 3               ; return to previous segment
+000087r 3               .popseg
+000BD0r 3               
+000BD0r 2               .include "rng.asm"
+000BD0r 3               ; lookup tables of RNG values for different framerules, each offset is another 2100 frames
+000BD0r 3  2E CB 25 E2  resume_0: .byte $2e, $cb, $25, $e2, $a0, $7f, $a2, $4f, $51, $e6, $6f, $cf, $41, $9c, $78, $75, $4d, $58, $3e, $5e, $47, $0b, $fe, $7d, $b4, $3b, $7a, $bd, $d2, $d5, $c0, $6f, $fd, $35, $4e, $e9, $0e, $4a, $2e, $0b, $c4, $bc, $0b, $eb, $28, $06, $12, $7a, $dc, $04, $18, $48, $ca, $ea, $63, $dd, $59, $7c, $96, $83, $91, $72, $14, $f9, $a9, $5c, $15, $c4, $bd, $ad, $09, $f5, $e9, $40, $08, $ee, $7a, $33, $71, $4b, $1a, $0c, $ba, $3c, $fc, $51, $01, $af, $f1, $52, $73, $94, $9c, $f6, $d6, $d3, $82, $5d, $19
+000BD4r 3  A0 7F A2 4F  
+000BD8r 3  51 E6 6F CF  
+000C33r 3  F4 68 83 B5  resume_1: .byte $f4, $68, $83, $b5, $b9, $53, $27, $e3, $cd, $23, $6b, $2c, $8f, $55, $34, $3f, $f3, $fa, $9c, $36, $37, $8d, $29, $c9, $93, $07, $fa, $da, $c1, $9a, $bd, $f7, $b8, $65, $6c, $58, $f6, $0a, $74, $e1, $43, $4b, $4b, $e2, $60, $9e, $fc, $e4, $c5, $6c, $26, $8c, $dd, $2f, $b3, $2c, $99, $ea, $a1, $70, $c2, $6c, $dc, $ac, $3c, $54, $75, $1d, $10, $06, $21, $a8, $ec, $48, $8c, $1d, $ce, $ed, $87, $0d, $60, $e8, $33, $5e, $df, $17, $f5, $e8, $e6, $ea, $33, $95, $61, $03, $79, $64, $27, $83, $bd
+000C37r 3  B9 53 27 E3  
+000C3Br 3  CD 23 6B 2C  
+000C96r 3  A9 FE C8 70  resume_2: .byte $a9, $fe, $c8, $70, $f8, $ad, $63, $7c, $6e, $ef, $b5, $b2, $0c, $6d, $c4, $d5, $68, $4b, $e1, $8a, $b9, $9a, $d5, $32, $fa, $71, $0f, $a1, $64, $31, $3c, $28, $43, $0f, $f0, $8a, $eb, $9e, $28, $f6, $cb, $33, $5d, $35, $30, $93, $d9, $11, $7c, $64, $16, $1d, $48, $fb, $74, $96, $2a, $13, $8c, $76, $e1, $88, $f5, $5f, $6e, $ec, $5f, $95, $6a, $5c, $33, $43, $3f, $c8, $9d, $c1, $3b, $8a, $64, $9b, $54, $f1, $47, $26, $26, $b5, $f6, $b7, $05, $4f, $d5, $bc, $59, $ef, $d5, $c2, $23, $38, $8e
+000C9Ar 3  F8 AD 63 7C  
+000C9Er 3  6E EF B5 B2  
+000CF9r 3  40 2F CF 1A  resume_3: .byte $40, $2f, $cf, $1a, $8b, $0a, $2d, $ba, $f4, $a8, $62, $eb, $12, $c7, $ad, $aa, $8e, $bf, $d8, $e7, $d6, $81, $86, $a0, $dd, $7f, $fb, $14, $e6, $05, $46, $c6, $33, $c5, $29, $3b, $06, $8b, $c0, $35, $4c, $a5, $cb, $f1, $f0, $ae, $20, $d9, $f6, $bc, $5a, $05, $f2, $a4, $12, $cf, $18, $c7, $cf, $96, $64, $51, $4c, $07, $16, $45, $b5, $ae, $4a, $50, $71, $13, $e7, $59, $84, $fa, $a7, $51, $6a, $80, $94, $20, $21, $9a, $98, $9a, $1d, $66, $c9, $9b, $b2, $97, $9b, $e8, $26, $0b, $6d, $3e, $f5
+000CFDr 3  8B 0A 2D BA  
+000D01r 3  F4 A8 62 EB  
+000D5Cr 3  00 D3 5E FA  resume_4: .byte $00, $d3, $5e, $fa, $7a, $50, $eb, $43, $29, $77, $08, $8e, $0a, $1c, $24, $01, $5f, $28, $1b, $f2, $a5, $b4, $2d, $c5, $28, $9d, $e4, $56, $2f, $67, $3e, $97, $b5, $da, $c9, $2f, $d0, $b6, $91, $d9, $da, $c2, $70, $9a, $91, $89, $92, $fa, $0f, $75, $76, $3f, $63, $53, $fa, $e2, $4c, $e0, $d6, $7b, $a6, $41, $a6, $b9, $ca, $9d, $0a, $85, $9e, $e8, $17, $95, $98, $c9, $bf, $79, $d0, $45, $a2, $b7, $3d, $c2, $af, $d7, $d5, $f1, $f1, $08, $c2, $04, $19, $ee, $28, $37, $8c, $8f, $2b, $4e, $e8
+000D60r 3  7A 50 EB 43  
+000D64r 3  29 77 08 8E  
+000DBFr 3  00 8C C0 CF  resume_5: .byte $00, $8c, $c0, $cf, $6c, $44, $b0, $37, $c1, $27, $cc, $59, $2e, $92, $7e, $55, $43, $56, $ab, $3d, $08, $b7, $21, $84, $92, $62, $13, $7e, $e3, $6d, $b2, $1a, $d2, $51, $9a, $59, $dd, $a1, $10, $b2, $43, $89, $e6, $79, $70, $d4, $d3, $49, $e3, $0d, $c2, $35, $87, $1b, $df, $7d, $7c, $6f, $49, $57, $6f, $e3, $3f, $b6, $e7, $16, $60, $d8, $0b, $49, $f5, $b2, $57, $7a, $b6, $8d, $9f, $e7, $77, $b6, $15, $83, $ec, $e2, $e4, $c4, $ca, $c4, $51, $32, $7d, $c1, $1e, $e7, $c1, $98, $f1, $32, $03
+000DC3r 3  6C 44 B0 37  
+000DC7r 3  C1 27 CC 59  
+000E22r 3  00 2B 7D 3A  resume_6: .byte $00, $2b, $7d, $3a, $98, $e4, $67, $b1, $92, $c9, $dd, $45, $3a, $ab, $36, $57, $fd, $06, $9c, $d9, $42, $de, $7b, $0f, $c3, $58, $db, $d2, $bc, $a3, $cf, $34, $b9, $e5, $09, $07, $7c, $cc, $32, $01, $f7, $0c, $07, $4d, $52, $c7, $f6, $bd, $fc, $e7, $2f, $4b, $40, $bd, $2a, $b9, $e4, $af, $e5, $a1, $23, $60, $73, $c5, $72, $2c, $74, $d3, $37, $99, $da, $99, $67, $e8, $c9, $7e, $3e, $6c, $33, $d9, $6f, $06, $b3, $4d, $4f, $27, $29, $d5, $d5, $3a, $4f, $1c, $4e, $88, $d8, $87, $a6, $ae, $d3
+000E26r 3  98 E4 67 B1  
+000E2Ar 3  92 C9 DD 45  
+000E85r 3               ; ================================================================
+000E85r 3               ;  Setup framerule RNG
+000E85r 3               ; ----------------------------------------------------------------
+000E85r 3               RNGQuickResume:
+000E85r 3  AD rr rr         lda MathFrameruleDigitStart+3        ; get hundreds and thousands digits of bcd framerule value
+000E88r 3  20 rr rr         jsr MultiplyBy10                     ;
+000E8Br 3  6D rr rr         adc MathFrameruleDigitStart+2        ;
+000E8Er 3  AA               tax                                  ; store in X
+000E8Fr 3  BD rr rr         lda resume_0,x                       ; get rng value from lookup table for this offset
+000E92r 3  8D A7 07         sta PseudoRandomBitReg+0             ;
+000E95r 3  BD rr rr         lda resume_1,x                       ;
+000E98r 3  8D A8 07         sta PseudoRandomBitReg+1             ;
+000E9Br 3  BD rr rr         lda resume_2,x                       ;
+000E9Er 3  8D A9 07         sta PseudoRandomBitReg+2             ;
+000EA1r 3  BD rr rr         lda resume_3,x                       ;
+000EA4r 3  8D AA 07         sta PseudoRandomBitReg+3             ;
+000EA7r 3  BD rr rr         lda resume_4,x                       ;
+000EAAr 3  8D AB 07         sta PseudoRandomBitReg+4             ;
+000EADr 3  BD rr rr         lda resume_5,x                       ;
+000EB0r 3  8D AC 07         sta PseudoRandomBitReg+5             ;
+000EB3r 3  BD rr rr         lda resume_6,x                       ;
+000EB6r 3  8D AD 07         sta PseudoRandomBitReg+6             ;
+000EB9r 3               @FrameruleAdjust:
+000EB9r 3  AD rr rr         lda MathFrameruleDigitStart + 1      ; get ones and tens digits of bcd framerule value
+000EBCr 3  20 rr rr         jsr MultiplyBy10                     ;
+000EBFr 3  6D rr rr         adc MathFrameruleDigitStart + 0      ;
+000EC2r 3  A8               tay                                  ; store in Y
+000EC3r 3  F0 03            beq @FrameAdjust                     ; if not set, we can skip ahead
+000EC5r 3  20 rr rr         jsr FRStepRNGByY                     ; otherwise we advance the RNG based on the framerule value * 18
+000EC8r 3               @FrameAdjust:
+000EC8r 3  AE rr rr         ldx SettablesPUP                     ; check if player has selected a powerup
+000ECBr 3  D0 01            bne :+                               ; yes - skip ahead to adjust rng
+000ECDr 3  60               rts                                  ; no - we are done!
+000ECEr 3  BC rr rr     :   ldy @FramerulePowerupAdjust-1,x      ; check rng steps for current powerup value
+000ED1r 3  20 rr rr         jsr StepRNGByY                       ; and adjust the rng for this value
+000ED4r 3  CA               dex                                  ; decrement to next powerup value
+000ED5r 3  D0 F7            bne :-                               ; and loop until we reach small mario state
+000ED7r 3  60               rts                                  ; then we are done!
+000ED8r 3               @FramerulePowerupAdjust:
+000ED8r 3  3B               .byte 59                            ; fr pause from grabbing mushroom
+000ED9r 3  3F               .byte 63                            ; fr pause from grabbing fireflower
+000EDAr 3  BF               .byte 254 - 63                      ; fr pause from small fire (minus fr pause from grabbing fire)
+000EDBr 3  3B               .byte 59                            ; fr pause from grabbing mushroom
+000EDCr 3  3F               .byte 63                            ; fr pause from grabbing fireflower
+000EDDr 3               ; ================================================================
+000EDDr 3               
+000EDDr 3               ; ================================================================
+000EDDr 3               ;  Advance RNG by Y framerules
+000EDDr 3               ; ----------------------------------------------------------------
+000EDDr 3               FRStepRNGByY:
+000EDDr 3  20 rr rr         jsr FRStepRNG
+000EE0r 3  88               dey
+000EE1r 3  D0 FA            bne FRStepRNGByY
+000EE3r 3  60               rts
+000EE4r 3               ; ================================================================
+000EE4r 3               
+000EE4r 3               ; ================================================================
+000EE4r 3               ;  Advance RNG by Y frames
+000EE4r 3               ; ----------------------------------------------------------------
+000EE4r 3               StepRNGByY:
+000EE4r 3  20 rr rr         jsr SingleStepRNG
+000EE7r 3  88               dey
+000EE8r 3  D0 FA            bne StepRNGByY
+000EEAr 3  60               rts
+000EEBr 3               ; ================================================================
+000EEBr 3               
+000EEBr 3               ; ================================================================
+000EEBr 3               ;  Advance RNG by 18 frames
+000EEBr 3               ; ----------------------------------------------------------------
+000EEBr 3               FRStepRNG:
+000EEBr 3  20 rr rr         jsr SingleStepRNG
+000EEEr 3  20 rr rr         jsr SingleStepRNG
+000EF1r 3  20 rr rr         jsr SingleStepRNG
+000EF4r 3  20 rr rr         jsr SingleStepRNG
+000EF7r 3  20 rr rr         jsr SingleStepRNG
+000EFAr 3  20 rr rr         jsr SingleStepRNG
+000EFDr 3  20 rr rr         jsr SingleStepRNG
+000F00r 3  20 rr rr         jsr SingleStepRNG
+000F03r 3  20 rr rr         jsr SingleStepRNG
+000F06r 3  20 rr rr         jsr SingleStepRNG
+000F09r 3  20 rr rr         jsr SingleStepRNG
+000F0Cr 3  20 rr rr         jsr SingleStepRNG
+000F0Fr 3  20 rr rr         jsr SingleStepRNG
+000F12r 3  20 rr rr         jsr SingleStepRNG
+000F15r 3  20 rr rr         jsr SingleStepRNG
+000F18r 3  20 rr rr         jsr SingleStepRNG
+000F1Br 3  20 rr rr         jsr SingleStepRNG
+000F1Er 3  4C rr rr         jmp SingleStepRNG
+000F21r 3               ; ================================================================
+000F21r 3               
+000F21r 3               ; ================================================================
+000F21r 3               ;  Advance RNG by a single game frame
+000F21r 3               ; ----------------------------------------------------------------
+000F21r 3               SingleStepRNG:
+000F21r 3  48               pha
+000F22r 3  AD A7 07         lda PseudoRandomBitReg         ; get first memory location of LSFR bytes
+000F25r 3  29 02            and #%00000010                 ; mask out all but d1
+000F27r 3  85 00            sta $00                        ; save here
+000F29r 3  AD A8 07         lda PseudoRandomBitReg+1       ; get second memory location
+000F2Cr 3  29 02            and #%00000010                 ; mask out all but d1
+000F2Er 3  45 00            eor $00                        ; perform exclusive-OR on d1 from first and second bytes
+000F30r 3  18               clc                            ; if neither or both are set, carry will be clear
+000F31r 3  F0 01            beq RotPRandomBit
+000F33r 3  38               sec                            ; if one or the other is set, carry will be set
+000F34r 3               RotPRandomBit:
+000F34r 3  6E A7 07         ror PseudoRandomBitReg+0       ; rotate carry into d7, and rotate last bit into carry
+000F37r 3  6E A8 07         ror PseudoRandomBitReg+1       ; rotate carry into d7, and rotate last bit into carry
+000F3Ar 3  6E A9 07         ror PseudoRandomBitReg+2       ; rotate carry into d7, and rotate last bit into carry
+000F3Dr 3  6E AA 07         ror PseudoRandomBitReg+3       ; rotate carry into d7, and rotate last bit into carry
+000F40r 3  6E AB 07         ror PseudoRandomBitReg+4       ; rotate carry into d7, and rotate last bit into carry
+000F43r 3  6E AC 07         ror PseudoRandomBitReg+5       ; rotate carry into d7, and rotate last bit into carry
+000F46r 3  6E AD 07         ror PseudoRandomBitReg+6       ; rotate carry into d7, and rotate last bit into carry
+000F49r 3  68               pla
+000F4Ar 3  60               rts
+000F4Br 3               ; ================================================================
+000F4Br 3               
+000F4Br 2               
+000F4Br 2               ; magic save header for WRAM
+000F4Br 2               ROMSaveHeader:
+000F4Br 2  03 20 07 21  .byte $03, $20, $07, $21, $03
+000F4Fr 2  03           
+000F50r 2               ROMSaveHeaderEnd:
+000F50r 2               ROMSaveHeaderLen = ROMSaveHeaderEnd-ROMSaveHeader
+000F50r 2               
+000F50r 1               
+000F50r 1               .segment "INES"
+000000r 1               ; MMC3 INES header
+000000r 1               INES_MAPPER = 4 << 4
+000000r 1               INES_BATTERY = %00000010
+000000r 1               INES_VERTICAL_MIRROR = %00000001
+000000r 1  4E 45 53 1A  .byte $4E,$45,$53,$1A ; NES
+000004r 1  09           .byte 9               ; prg banks
+000005r 1  01           .byte 1               ; chr banks
+000006r 1  43           .byte INES_MAPPER | INES_BATTERY | INES_VERTICAL_MIRROR
+000007r 1               
+000007r 1               ;.segment "PRACTISE_PRG0"
+000007r 1               ;TitleMMC3NMI:
+000007r 1               ;    jsr BANK_GAME_RTS
+000007r 1               ;    jmp RELOCATE_NonMaskableInterrupt
+000007r 1               
+000007r 1               .segment "PRACTISE_PRG2"
+000000r 1               ; ================================================================
+000000r 1               ;  Boot game into title screen
+000000r 1               ; ----------------------------------------------------------------
+000000r 1               ColdTitleReset:
+000000r 1  78               sei                       ; 6502 init
+000001r 1  D8               cld                       ;
+000002r 1  A2 FF            ldx #$FF                  ; clear stack
+000004r 1  9A               txs                       ;
+000005r 1  A9 10            lda #$10                  ; init greated mapper state
+000007r 1  A2 06            ldx #$06                  ;
+000009r 1  8E 00 80         stx $8000                 ;
+00000Cr 1  8D 01 80         sta $8001                 ;
+00000Fr 1  4C rr rr         jmp TitleReset2           ; and prepare the title screen
+000012r 1               ; ----------------------------------------------------------------
+000012r 1               
+000012r 1               ; the following code is copied to battery backed ram
+000012r 1               .segment "PRACTISE_WRAMCODE"
+000087r 1               
+000087r 1               ;BANK_GAME_NMI:
+000087r 1               ;    lda IsPlaying
+000087r 1               ;    bne @InGameMode
+000087r 1               ;    jsr BANK_TITLE_RTS
+000087r 1               ;    jmp TitleNMI
+000087r 1               ;@InGameMode:
+000087r 1               ;    jsr BANK_GAME_RTS
+000087r 1               ;    jmp RELOCATE_NonMaskableInterrupt
+000087r 1               
+000087r 1               ; ================================================================
+000087r 1               ;  Handle loading new level banks
+000087r 1               ; ----------------------------------------------------------------
+000087r 1               BANK_LEVELBANK_RTS:
+000087r 1  48               pha                     ; save whatever A value we were called with
+000088r 1  A9 07            lda #7                  ; set mmc state
+00008Ar 1  8D 00 80         sta $8000               ;
+00008Dr 1               PATCHER_LDA_LEVELBANK = *   ; GreatEd stores the bank in varying locations
+00008Dr 1  AD F7 07         lda $07F7               ; so this code is replaced at patch time
+000090r 1  8D 01 80         sta $8001               ; set bank
+000093r 1  68               pla                     ; restore the A value we were called with
+000094r 1  60               rts                     ;
+000095r 1               ; ================================================================
+000095r 1               
+000095r 1               ; ================================================================
+000095r 1               ;  Load into game bank and return control
+000095r 1               ; ----------------------------------------------------------------
+000095r 1               BANK_GAME_RTS:
+000095r 1  48               pha                     ; push our current A value to not disturb it
+000096r 1  A9 06            lda #6                  ; set mmc3 state for game mode
+000098r 1  8D 00 80         sta $8000               ;
+00009Br 1  A9 00            lda #0                  ;
+00009Dr 1  8D 01 80         sta $8001               ;
+0000A0r 1  A9 07            lda #7                  ;
+0000A2r 1  8D 00 80         sta $8000               ;
+0000A5r 1  A9 01            lda #1                  ;
+0000A7r 1  8D 01 80         sta $8001               ;
+0000AAr 1  68               pla                     ; restore previous A value
+0000ABr 1  60               rts                     ;
+0000ACr 1               ; ================================================================
+0000ACr 1               
+0000ACr 1               ; ================================================================
+0000ACr 1               ;  Load into title screen and return control
+0000ACr 1               ; ----------------------------------------------------------------
+0000ACr 1               BANK_TITLE_RTS:
+0000ACr 1  48               pha                     ; push our current A value to not disturb it
+0000ADr 1  A9 06            lda #6                  ; set mmc3 state for title mode
+0000AFr 1  8D 00 80         sta $8000               ;
+0000B2r 1  A9 0E            lda #$E                 ;
+0000B4r 1  8D 01 80         sta $8001               ;
+0000B7r 1  A9 07            lda #7                  ;
+0000B9r 1  8D 00 80         sta $8000               ;
+0000BCr 1  A9 0F            lda #$F                 ;
+0000BEr 1  8D 01 80         sta $8001               ;
+0000C1r 1  68               pla                     ; restore previous A value
+0000C2r 1  60               rts                     ;
+0000C3r 1               ; ================================================================
+0000C3r 1               
+0000C3r 1               ; interrupt handlers
+0000C3r 1               .segment "PRACTISE_VEC"
+000000r 1  rr rr        .word TitleNMI
+000002r 1  rr rr        .word ColdTitleReset
+000004r 1  00 FF        .word $ff00
+000004r 1               
