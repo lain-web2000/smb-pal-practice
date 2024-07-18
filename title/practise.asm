@@ -138,6 +138,7 @@ PractiseEnterStage:
 .byte $3                                         ; size = 0, status = 0. big vuln. mario
 .byte $1                                         ; size = 0, status = 1. big super mario
 .byte $2                                         ; size = 0, status = 2. big fire mario
+.byte $2                                         ; size = 0, status = 2. big fire mario, padding
 .byte $0                                         ; size = 1, status = 0. small vuln. mario
 .byte $5                                         ; size = 1, status = 1. small super mario
 .byte $6                                         ; size = 1, status = 2. small fire mario
@@ -237,7 +238,7 @@ PractiseWriteTopStatusLine:
     inc ScreenRoutineTask                        ; and advance the screen routine task
     rts                                          ; done
 @TopStatusText:                                  ;
-  .byte $20, $43,  21, "RULE x SOCKS TO FRAME"   ;
+  .byte $20, $43,  21, "RULE x SOCKS XP FRAME"   ;
   .byte $20, $59,   4, "TIME"                    ;
   .byte $20, $73,   2, $2e, $29                  ; coin that shows next to the coin counter
   .byte $23, $c0, $7f, $aa                       ; tile attributes for the top row, sets palette
@@ -414,7 +415,7 @@ RedrawHighFreqStatusbar:
     lsr                                          ;
     lsr                                          ;
     sta VRAM_Buffer1+3+3,x ; Y                   ; and write that byte to the vram buffer
-    lda AreaPointer                              ; get the pointer to where warp pipes direct player
+    lda $03AD                              ; get the pointer to where warp pipes direct player
     tay                                          ; copy to Y
     and #$0F                                     ; mask off the high nibble
     sta VRAM_Buffer1+3+7,x ; X                   ; and write that byte to the vram buffer
@@ -480,7 +481,7 @@ RecalculateSockfolder:
     pha                                          ; so store the current value
     clc                                          ;
     lda @DataSubX                                ; get subpixel x position
-    lda #$80                                     ; and increase it by half
+    adc #$80                                     ; and increase it by half
     sta @DataSubX                                ; and store it back
     lda @DataX                                   ; get x position
     adc #$02                                     ; and add 2 + carry value
