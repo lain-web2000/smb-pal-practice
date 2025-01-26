@@ -209,7 +209,7 @@ Sprite0Clr:    lda PPU_STATUS            ;wait for sprite 0 flag to clear, which
 Sprite0Hit:    lda PPU_STATUS            ;do sprite #0 hit detection
                and #%01000000
                beq Sprite0Hit
-               ldy #$14                  ;small delay, to wait until we hit horizontal blank time
+               ldy #$11                  ;small delay, to wait until we hit horizontal blank time
 HBlankDelay:   dey
                bne HBlankDelay
 SkipSprite0:   lda HorizontalScroll      ;set scroll registers from variables
